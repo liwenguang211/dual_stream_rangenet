@@ -88,6 +88,14 @@ logger plus environment manifest. Numeric result files ship as templates with
 explicit schemas and `FILL_ME` cells to be populated by the provided scripts.
 See `reproducibility/README.md` for the reviewer-requirement-to-artifact map.
 
+The UBPC-9 dataset and raw point clouds/labels are hosted on Baidu NetDisk:
+
+```text
+Share name : DataSets
+Link       : https://pan.baidu.com/s/1a6ETzXrYIpeoofpxK_8rdQ
+Access code: 5577
+```
+
 ## Reviewer-Response Controls
 
 The main model file includes controlled variants for the concerns raised in
