@@ -1,0 +1,31 @@
+# Robustness-corruption configuration.
+# Reviewer 1 asks for the corruption parameters and generation scripts behind the
+# robustness table. Corruption kinds and their base magnitudes match
+# ds_rangenet_v3.apply_corruption exactly; severity scales the base magnitude.
+
+model_variant: full
+seeds: [1337, 2024, 42, 7, 2718]
+input_hw: [64, 512]
+
+# Severity levels evaluated for every corruption (multiplies the base magnitude
+# defined in apply_corruption).
+severities: [1, 2, 3]
+
+# Corruption kinds and the base magnitude each severity multiplies.
+# These base values are the constants hard-coded in apply_corruption and are
+# reproduced here for transparency; do not change one without the other.
+corruptions:
+  range_noise:      {base: 0.05, target: "channel 0 (normalized range), additive Gaussian"}
+  intensity_noise:  {base: 0.20, target: "channels 1-4 (intensity stats), multiplicative Gaussian"}
+  point_dropout:    {base: 0.30, target: "all channels, per-pixel Bernoulli drop"}
+  scanline_dropout: {base: 0.25, target: "whole rows zeroed (fraction of H)"}
+  block_occlusion:  {base_h: 16, base_w: 64, blocks: 3, target: "rectangular zeroed blocks"}
+
+# Per-frame corruption RNG = seed + rng_offset, so a given (seed, frame) maps to
+# a fixed corruption realization and results are reproducible.
+rng_offset: 70003
+
+# Evaluation frames (UBPC-9 test split). Use the same list across all models.
+frame_ids: [24, 118, 205, 337, 452, 561, 689, 774, 803, 912]
+
+output_csv: results/corruption_results.csv

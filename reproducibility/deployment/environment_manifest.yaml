@@ -1,0 +1,37 @@
+# Jetson deployment environment manifest.
+# Reviewer 2 asks for TensorRT, CUDA, power mode, clocks, and ambient temperature
+# behind the long-term deployment test. Fill from `jetson_release`, `nvpmodel -q`,
+# `jetson_clocks --show`, and a thermometer/room log. Leave FILL_ME until measured.
+
+device:
+  board: FILL_ME              # e.g. Jetson Orin NX 16GB
+  jetpack: FILL_ME            # e.g. 5.1.2
+  l4t: FILL_ME                # e.g. 35.4.1
+
+software:
+  cuda: FILL_ME               # e.g. 11.4
+  cudnn: FILL_ME
+  tensorrt: FILL_ME           # e.g. 8.5.2
+  onnxruntime: FILL_ME
+  precision: FILL_ME          # fp16 | int8 | fp32
+
+power_and_clocks:
+  nvpmodel_mode: FILL_ME      # e.g. 0 (MAXN)
+  jetson_clocks: FILL_ME      # on | off
+  cpu_clock_mhz: FILL_ME
+  gpu_clock_mhz: FILL_ME
+  emc_clock_mhz: FILL_ME
+  power_budget_w: FILL_ME
+
+thermal:
+  ambient_temp_c: FILL_ME     # room temperature during the 60-min run
+  cooling: FILL_ME            # passive | active fan
+  thermal_throttle_observed: FILL_ME   # yes | no
+
+run:
+  model: dsconv               # matches checkpoint_manifest.csv
+  onnx_path: models/ds_rangenet_v3.onnx
+  input_hw: [64, 512]
+  duration_min: 60
+  sampling_hz: 1
+  telemetry_csv: jetson_telemetry.csv

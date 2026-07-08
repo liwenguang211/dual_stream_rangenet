@@ -1,0 +1,34 @@
+# CKA / normalized cross-covariance extraction configuration.
+# Reviewer 1 asks for the extraction layers, frame ids, token sampling, and
+# per-seed results behind the modality-complementarity claim.
+
+model_variant: full
+
+# Random seeds whose checkpoints are analyzed. Must match seeds/run_seeds.py.
+seeds: [1337, 2024, 42, 7, 2718]
+
+# Feature maps compared, by the keys returned from
+# DualStreamRangeNetV3.forward_features(). Each pair is (intensity_side, geometry_side).
+layer_pairs:
+  input_modalities:     [input_intensity, input_geometry]
+  independent_encoders: [enc_intensity, enc_geometry]
+  after_aspp:           [aspp_intensity, aspp_geometry]
+  after_fusion:         [f3, decoder]
+
+# Frames used for the analysis. These are UBPC-9 validation-split frame ids.
+# Replace with the exact ids used in the paper table if different.
+frame_ids: [24, 118, 205, 337, 452, 561, 689, 774, 803, 912]
+
+# Token sampling: CKA is computed over spatially-flattened tokens (H*W per frame).
+# To bound memory, a fixed number of tokens is subsampled per frame with a fixed
+# per-frame RNG derived from the seed so the sampling is reproducible.
+token_sampling:
+  tokens_per_frame: 4096      # set to -1 to use all tokens
+  strategy: uniform_random    # uniform_random | grid | all
+  rng_offset: 90001           # sampling RNG = seed + rng_offset
+
+# Input range-image resolution used during extraction.
+input_hw: [64, 512]
+
+# Output CSV (one row per seed x layer_pair).
+output_csv: results/cka_per_seed.csv

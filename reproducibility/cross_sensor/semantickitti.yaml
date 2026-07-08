@@ -1,0 +1,63 @@
+# Cross-sensor config: SemanticKITTI (Velodyne HDL-64E, 64-beam).
+# Reviewer 3 asks that cross-sensor projection, holes, and filling be explained.
+# This file records the exact projection and class-mapping used for the
+# SemanticKITTI cross-sensor experiment so the result is reproducible.
+
+sensor:
+  name: velodyne_hdl64e
+  beams: 64
+  horizontal_resolution: 2048
+  fov_up_deg: 3.0
+  fov_down_deg: -25.0
+
+projection:
+  height: 64
+  width: 2048
+  # Spherical projection; keep nearest return per pixel (matches C++ preprocessor).
+  keep: nearest_return
+  # No input-stage interpolation/hole filling; empty cells filled with zeros and
+  # recorded in a validity mask used only to exclude invalid pixels from loss and
+  # evaluation (not concatenated as a network input channel).
+  input_stage_hole_filling: false
+  invalid_fill_value: 0.0
+  validity_mask: true
+
+# Post-prediction KNN back-projection fill (applied to point labels, not pixels).
+knn_postproc:
+  enabled: true
+  k: 5
+  search_window: 5
+  sigma: 1.0
+
+# 16-channel construction reuses the DS-RangeNet preprocessor. Intensity is the
+# KITTI "remission" field, normalized to [0,1] per scan.
+channels: dual_stream_16   # see dual_stream_rangenet README channel list
+
+# Mapping SemanticKITTI labels -> UBPC-9 evaluation classes.
+# "ignore" classes are excluded from mIoU (mapped to -1).
+label_map:
+  0:  -1   # unlabeled -> ignore
+  40:  1   # road      -> ground
+  48:  1   # sidewalk  -> ground
+  44:  1   # parking   -> ground
+  50:  3   # building  -> side_facade
+  51:  3   # fence     -> side_facade
+  70:  0   # vegetation-> background
+  71:  0   # trunk     -> background
+  72:  1   # terrain   -> ground
+  80:  6   # pole      -> column
+  81:  7   # traffic-sign -> window (planar vertical surface proxy)
+  10:  8   # car       -> dynamic
+  11:  8   # bicycle   -> dynamic
+  15:  8   # motorcycle-> dynamic
+  18:  8   # truck     -> dynamic
+  30:  8   # person    -> dynamic
+  252: 8   # moving-car-> dynamic
+
+splits:
+  train: [0, 1, 2, 3, 4, 5, 6, 7, 9, 10]
+  val:   [8]
+  test:  [8]   # cross-sensor generalization is reported on sequence 08
+
+checkpoint: checkpoints/full_semantickitti_seed1337.pth
+official_eval_log: logs/semantickitti_seq08_eval.txt

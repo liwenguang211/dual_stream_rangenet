@@ -1,0 +1,9 @@
+seed,layer_pair,n_frames,tokens_per_frame,linear_cka,normalized_cross_cov
+# Populated by extract_cka.py. One row per (seed, layer_pair).
+# linear_cka in [0,1]: lower => more complementary (less redundant) streams.
+# normalized_cross_cov in [0,1]: lower => weaker linear coupling.
+# Rows below are the template placeholders; extract_cka.py overwrites this file.
+1337,input_modalities,10,4096,FILL_ME,FILL_ME
+1337,independent_encoders,10,4096,FILL_ME,FILL_ME
+1337,after_aspp,10,4096,FILL_ME,FILL_ME
+1337,after_fusion,10,4096,FILL_ME,FILL_ME

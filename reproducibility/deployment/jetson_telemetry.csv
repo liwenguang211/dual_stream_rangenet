@@ -1,0 +1,6 @@
+timestamp_s,elapsed_s,fps,latency_ms,gpu_util_pct,gpu_freq_mhz,cpu_util_pct,ram_used_mb,power_total_mw,soc_temp_c,gpu_temp_c
+# 60-minute Jetson telemetry, 1 Hz. Populated by log_jetson_telemetry.py, which
+# parses `tegrastats` and merges the per-frame latency/fps from the inference loop.
+# The row below is the header/schema example only; the logger overwrites this file
+# with ~3600 measured rows.
+0,0,FILL_ME,FILL_ME,FILL_ME,FILL_ME,FILL_ME,FILL_ME,FILL_ME,FILL_ME,FILL_ME

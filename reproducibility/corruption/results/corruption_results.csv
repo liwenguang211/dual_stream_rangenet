@@ -1,0 +1,12 @@
+model,seed,corruption,severity,mIoU,mIoU_drop_vs_clean
+# Populated by run_corruption.py. One row per (model, seed, corruption, severity).
+# "clean" rows (severity 0) record the uncorrupted baseline used for mIoU_drop.
+# mIoU_drop_vs_clean = clean_mIoU - corrupted_mIoU (positive = degradation).
+full,1337,clean,0,FILL_ME,0.0
+full,1337,range_noise,1,FILL_ME,FILL_ME
+full,1337,range_noise,2,FILL_ME,FILL_ME
+full,1337,range_noise,3,FILL_ME,FILL_ME
+full,1337,intensity_noise,1,FILL_ME,FILL_ME
+full,1337,point_dropout,1,FILL_ME,FILL_ME
+full,1337,scanline_dropout,1,FILL_ME,FILL_ME
+full,1337,block_occlusion,1,FILL_ME,FILL_ME

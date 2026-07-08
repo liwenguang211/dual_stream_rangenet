@@ -76,6 +76,18 @@ src/RangeNetInferencer.cpp    Projection, 16-channel preprocessing, ORT inferenc
 draw_arch.py                  Architecture diagram generator
 ```
 
+## Reproducibility Evidence Chain
+
+The `reproducibility/` directory holds the re-runnable evidence requested in
+review (paper note item 4): five-seed raw-result CSVs with a paired
+significance test, CKA/cross-covariance extraction with its layer/frame/token
+config, corruption parameters and batch scripts, cross-sensor
+(SemanticPOSS/SemanticKITTI) configs and evaluation-log templates, the
+Standard/Hybrid/DSConv checkpoint manifest, and a 60-minute Jetson telemetry
+logger plus environment manifest. Numeric result files ship as templates with
+explicit schemas and `FILL_ME` cells to be populated by the provided scripts.
+See `reproducibility/README.md` for the reviewer-requirement-to-artifact map.
+
 ## Reviewer-Response Controls
 
 The main model file includes controlled variants for the concerns raised in
