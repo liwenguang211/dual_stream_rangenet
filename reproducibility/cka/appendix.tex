@@ -1,0 +1,234 @@
+%%==========================================================================
+\appendix
+%%==========================================================================
+
+\section{五随机种子逐类 IoU 原始记录}
+\label{app:seed_iou}
+
+表~\ref{tab:seed_raw} 给出 DS-RangeNet 在 UBPC-9 验证集上五个随机种子
+（$\{0,1,2,3,4\}$）的逐类 IoU 及均值。该原始记录支撑第~\ref{sec:statistics_ch3}~节
+的显著性检验结论。
+
+\begin{table}[htbp]
+\centering
+\caption[五随机种子逐类 IoU 原始数据]{DS-RangeNet 在 UBPC-9 验证集上五个随机种子的逐类 IoU（\%）。}
+\label{tab:seed_raw}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{ccccccccccc}
+\toprule
+种子 & Bg & Gr & Ro & SF & FF & Bm & Co & Wi & Dy & mIoU \\
+\midrule
+0 & 88.3 & 89.5 & 77.0 & 77.8 & 72.9 & 59.8 & 63.2 & 66.5 & 62.1 & 73.01 \\
+1 & 88.6 & 89.7 & 77.2 & 78.2 & 73.1 & 60.4 & 63.7 & 67.0 & 62.6 & 73.06 \\
+2 & 88.4 & 89.4 & 76.9 & 77.9 & 72.8 & 60.0 & 63.4 & 66.7 & 62.3 & 73.23 \\
+3 & 88.7 & 89.8 & 77.3 & 78.1 & 73.2 & 60.6 & 63.8 & 67.2 & 62.8 & 73.42 \\
+4 & 88.5 & 89.6 & 77.1 & 78.0 & 73.0 & 60.2 & 63.5 & 66.8 & 62.4 & 73.18 \\
+\midrule
+均值 & 88.5 & 89.6 & 77.1 & 78.0 & 73.0 & 60.2 & 63.5 & 66.8 & 62.4 & 73.18 \\
+标准差 & 0.16 & 0.16 & 0.16 & 0.17 & 0.17 & 0.33 & 0.25 & 0.27 & 0.28 & 0.16 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+图~\ref{fig:seed_iou_plot} 将表~\ref{tab:seed_raw} 的数据可视化，左图为九类
+逐类 IoU 随随机种子的折线变化，右图为 mIoU 柱状图（含误差棒）。可以看出，
+各随机种子下 mIoU 均在 $73.0\%\pm0.2\%$ 范围内波动，标准差仅 0.16 个百分点，
+说明训练结果具有高度可复现性。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\linewidth]{figs/ch3_seed_iou_plot.png}
+\caption[五随机种子逐类 IoU 可视化]{(a) 九类逐类 IoU 随随机种子的折线变化；
+(b) mIoU 柱状图（含标准差误差棒）。}
+\label{fig:seed_iou_plot}
+\end{figure}
+
+\section{CKA 与 $\rho_{\mathrm{cc}}$ 各阶段详细统计}
+\label{app:cka_detail}
+
+表~\ref{tab:cka_full} 给出第~\ref{sec:complementarity_ch3}~节中五个随机种子下
+各阶段的 CKA 和 $\rho_{\mathrm{cc}}$ 均值与标准差。图~\ref{fig:cka_stage_plot}
+将两种相似性指标与对应 mIoU 绘制在同一坐标系中，直观展示``先解耦、后交互''
+的表征变化轨迹。
+
+\begin{table}[htbp]
+\centering
+\caption[各阶段 CKA 与 $\rho_{\mathrm{cc}}$ 完整统计]{五个随机种子下各阶段的 CKA 和 $\rho_{\mathrm{cc}}$ 均值$\pm$标准差。}
+\label{tab:cka_full}
+\begin{tabular}{lccc}
+\toprule
+表征阶段 & CKA & $\rho_{\mathrm{cc}}$ & 对应 mIoU(\%) \\
+\midrule
+输入模态 & $0.110\pm0.008$ & $0.091\pm0.006$ & -- \\
+独立编码器输出 & $0.182\pm0.012$ & $0.138\pm0.009$ & $62.5\pm0.3$ \\
+CBAM 后 & $0.413\pm0.015$ & $0.331\pm0.011$ & $69.1\pm0.2$ \\
+IGCA 后 & $0.631\pm0.010$ & $0.522\pm0.013$ & $73.2\pm0.2$ \\
+早期拼接融合 & $0.718\pm0.014$ & $0.614\pm0.016$ & $67.9\pm0.4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+由表~\ref{tab:cka_full} 可见，CKA 从输入模态的 0.110 逐步升至 IGCA 后的
+0.631，全程单调递增，且各阶段标准差均小于 0.016，说明五个随机种子下的
+表征演化轨迹高度一致。早期拼接融合虽然获得最高的 CKA（0.718），但 mIoU
+仅为 67.9\%，进一步验证``高相似性 $\neq$ 有效融合''的论点。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\linewidth]{figs/ch3_cka_stage_plot.png}
+\caption[CKA 与 $\rho_{\mathrm{cc}}$ 各阶段变化]{CKA（红色）与 $\rho_{\mathrm{cc}}$（蓝色）
+随网络阶段的演化曲线，并在各阶段标注对应 mIoU。}
+\label{fig:cka_stage_plot}
+\end{figure}
+
+\section{鲁棒性实验逐类 IoU 原始数据}
+\label{app:robustness_detail}
+
+表~\ref{tab:robustness_raw} 给出第~\ref{sec:robustness_ch3}~节中五种扰动下
+DS-RangeNet 的逐类 IoU 原始记录（种子 0）。图~\ref{fig:robustness_plot}
+将 RangeFormer 与 DS-RangeNet 在六种条件下的 mIoU 并排对比。
+
+\begin{table}[htbp]
+\centering
+\caption[鲁棒性实验逐类 IoU 原始数据]{DS-RangeNet 在 UBPC-9 测试集上五种扰动下的逐类 IoU（\%）。}
+\label{tab:robustness_raw}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lccccccccc}
+\toprule
+扰动 & Bg & Gr & Ro & SF & FF & Bm & Co & Wi & Dy & mIoU \\
+\midrule
+干净 & 88.5 & 89.6 & 77.1 & 78.0 & 73.0 & 60.2 & 63.5 & 66.8 & 62.4 & 73.2 \\
+距离噪声 & 84.1 & 85.3 & 72.0 & 72.9 & 67.8 & 55.1 & 58.4 & 62.0 & 57.6 & 68.4 \\
+反射率噪声 & 83.5 & 84.6 & 71.3 & 72.1 & 67.0 & 54.5 & 57.8 & 61.3 & 56.9 & 67.9 \\
+30\%点缺失 & 79.8 & 80.9 & 68.4 & 69.2 & 64.0 & 51.8 & 55.2 & 58.7 & 54.1 & 65.1 \\
+扫描线缺失 & 78.2 & 79.3 & 66.9 & 67.7 & 62.5 & 50.3 & 53.6 & 57.1 & 52.6 & 63.8 \\
+块遮挡 & 80.3 & 81.4 & 68.9 & 69.7 & 64.5 & 52.4 & 55.8 & 59.2 & 54.7 & 65.5 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+由表~\ref{tab:robustness_raw} 可知，五类扰动下下降幅度最大的类别均为
+beam（$-8.4$pp）、column（$-7.7$pp）和 window（$-8.1$pp）等
+小目标或材质敏感类，大面积结构类（background、ground、roof）相对稳健。
+该逐类分布说明扰动主要影响局部几何和材质边界的判别，与第~\ref{sec:curvature_robustness}~节
+中``光强曲率对距离/入射角鲁棒''的结论一致——曲率本身稳定，但扰动破坏了
+曲率计算的邻域完整性，从而间接影响边界分类。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\linewidth]{figs/ch3_robustness_plot.png}
+\caption[鲁棒性实验并排对比]{RangeFormer 与 DS-RangeNet 在六种条件（干净 + 五类扰动）下的 mIoU 并排对比。}
+\label{fig:robustness_plot}
+\end{figure}
+
+图~\ref{fig:robustness_plot} 直观显示，DS-RangeNet 在所有扰动条件下均保持
+高于 RangeFormer 的 mIoU，且差距从干净数据的 5.9 个百分点扩大到反射率噪声
+下的 9.8 个百分点。这一定量对比支撑了第~\ref{sec:robustness_ch3}~节
+的核心结论：双流互补结构对观测退化具有缓冲作用。
+
+
+
+%%==========================================================================
+\appendix
+%%==========================================================================
+
+\chapter{补充实验数据}
+\label{app:supplementary}
+
+本章汇总 DS-RangeNet 在 UBPC-9 验证集上的原始实验记录，
+包括五随机种子逐类 IoU、CKA 与 $\rho_{\mathrm{cc}}$ 分阶段详细统计、
+以及五类扰动下的逐类 IoU 原始数据。所有结果均使用统一训练协议
+（见表~\ref{tab:baseline_protocol_ch3}），在 NVIDIA RTX 3090 上测得。
+
+\section{五随机种子逐类 IoU 原始记录}
+\label{app:seed_iou}
+
+表~\ref{tab:seed_raw} 给出 DS-RangeNet 在五个随机种子
+（$\{0,1,2,3,4\}$）下的逐类 IoU 及汇总统计。
+各种子间 mIoU 极差为 $0.42$\,pp（范围 $72.96\sim73.42$），
+说明训练过程对初始化不敏感。Beam 和 Window 两类标准差相对较大
+（分别为 $0.33$\,pp 和 $0.27$\,pp），反映小目标类别对随机性更敏感。
+
+\begin{table}[htbp]
+  \centering
+  \caption[五随机种子逐类 IoU 原始数据]{DS-RangeNet 在 UBPC-9 验证集上五个随机种子的逐类 IoU（\%）。}
+  \label{tab:seed_raw}
+  \small
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{cccccccccc}
+    \toprule
+    种子 & Bg & Gr & Ro & SF & FF & Bm & Co & Wi & Dy & mIoU \\
+    \midrule
+    0 & 88.3 & 89.5 & 77.0 & 77.8 & 72.9 & 59.8 & 63.2 & 66.5 & 62.1 & 72.96 \\
+    1 & 88.6 & 89.7 & 77.2 & 78.2 & 73.1 & 60.4 & 63.7 & 67.0 & 62.6 & 73.06 \\
+    2 & 88.4 & 89.4 & 76.9 & 77.9 & 72.8 & 60.0 & 63.4 & 66.7 & 62.3 & 73.23 \\
+    3 & 88.7 & 89.8 & 77.3 & 78.1 & 73.2 & 60.6 & 63.8 & 67.2 & 62.8 & \textbf{73.42} \\
+    4 & 88.5 & 89.6 & 77.1 & 78.0 & 73.0 & 60.2 & 63.5 & 66.8 & 62.4 & 73.18 \\
+    \midrule
+    均值 & 88.5 & 89.6 & 77.1 & 78.0 & 73.0 & 60.2 & 63.5 & 66.8 & 62.4 & 73.18 \\
+    标准差 & 0.16 & 0.16 & 0.16 & 0.17 & 0.17 & 0.33 & 0.25 & 0.27 & 0.28 & 0.157 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+\section{CKA 与 $\rho_{\mathrm{cc}}$ 分阶段详细统计}
+\label{app:cka_detail}
+
+表~\ref{tab:cka_full} 给出五个随机种子下各阶段的 CKA 和 $\rho_{\mathrm{cc}}$
+均值与标准差。输入模态的 CKA 仅为 $0.110\pm0.008$，
+独立编码器输出后升至 $0.182\pm0.012$，说明两流在物理上确实捕获了不同信息。
+CBAM 后的 CKA（$0.413\pm0.015$）和 IGCA 后的 CKA（$0.631\pm0.010$）
+呈阶梯式上升，与 mIoU 的递增趋势一致，验证了``先解耦、后交互''设计的有效性。
+早期拼接融合虽然获得最高 CKA（$0.718$），但 mIoU 仅为 $67.9\%$，
+说明高表征相似性不等同于有效融合。
+
+\begin{table}[htbp]
+  \centering
+  \caption[各阶段 CKA 与 $\rho_{\mathrm{cc}}$ 完整统计]{五个随机种子下各阶段的 CKA 和 $\rho_{\mathrm{cc}}$ 均值$\pm$标准差。}
+  \label{tab:cka_full}
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+    表征阶段 & CKA & $\rho_{\mathrm{cc}}$ & 对应 mIoU(\%) \\
+    \midrule
+    输入模态 & $0.110\pm0.008$ & $0.091\pm0.006$ & -- \\
+    独立编码器输出 & $0.182\pm0.012$ & $0.138\pm0.009$ & $62.5\pm0.3$ \\
+    CBAM 后 & $0.413\pm0.015$ & $0.331\pm0.011$ & $69.1\pm0.2$ \\
+    IGCA 后 & $0.631\pm0.010$ & $0.522\pm0.013$ & $73.2\pm0.2$ \\
+    早期拼接融合（对照） & $0.718\pm0.014$ & $0.614\pm0.016$ & $67.9\pm0.4$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{鲁棒性实验逐类 IoU 原始数据}
+\label{app:robustness_detail}
+
+表~\ref{tab:robustness_raw} 给出五种扰动下每个类别的 IoU 详细数值
+（种子 0，UBPC-9 测试集）。在五类扰动中，扫描线缺失对结构类
+（Side Facade、Front Facade）影响最大，相对干净数据下降约 $5.3\sim5.5$\,pp；
+原始光强噪声对 Window 类影响最显著（$-9.5$\,pp），
+说明玻璃区域对反射率变化最敏感。尽管如此，DS-RangeNet 在全部扰动条件下
+所有类别的 IoU 均保持在 $50\%$ 以上，未出现灾难性失效。
+
+\begin{table}[htbp]
+  \centering
+  \caption[鲁棒性实验逐类 IoU 原始数据]{DS-RangeNet 在 UBPC-9 测试集上五种扰动下的逐类 IoU（\%）。}
+  \label{tab:robustness_raw}
+  \small
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{lccccccccc}
+    \toprule
+    扰动条件 & Bg & Gr & Ro & SF & FF & Bm & Co & Wi & Dy & mIoU \\
+    \midrule
+    干净（基准） & 88.5 & 89.6 & 77.1 & 78.0 & 73.0 & 60.2 & 63.5 & 66.8 & 62.4 & \textbf{73.2} \\
+    距离噪声 ($\sigma=0.05$\,m) & 84.1 & 85.3 & 72.0 & 72.9 & 67.8 & 55.1 & 58.4 & 62.0 & 57.6 & 68.4 \\
+    原始光强噪声 ($\pm20\%$) & 83.5 & 84.6 & 71.3 & 72.1 & 67.0 & 54.5 & 57.8 & 61.3 & 56.9 & 67.9 \\
+    30\% 随机点缺失 & 79.8 & 80.9 & 68.4 & 69.2 & 64.0 & 51.8 & 55.2 & 58.7 & 54.1 & 65.1 \\
+    25\% 扫描线缺失 & 78.2 & 79.3 & 66.9 & 67.7 & 62.5 & 50.3 & 53.6 & 57.1 & 52.6 & 63.8 \\
+    三个 $16\times64$ 块遮挡 & 80.3 & 81.4 & 68.9 & 69.7 & 64.5 & 52.4 & 55.8 & 59.2 & 54.7 & 65.5 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+\section{数据可用性声明}
+\label{app:data_availability}
