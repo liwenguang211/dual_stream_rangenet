@@ -1,0 +1,8 @@
+level,d_range,n_frames,lambda_min_mean,rpe_median_m,rpe_iqr_m
+# Degeneration index D vs observability (paper appendix "退化指数分级统计").
+# 200 UBPC-9 test frames; Pearson r(D, lambda_min) = -0.81.
+# lambda_min: smallest eigenvalue of the LiDAR planar-matching Hessian.
+# rpe: relative pose error using LiDAR planar matching only.
+normal,D<0.25,108,2.45e-3,0.032,0.021
+mild,0.25<=D<0.65,62,0.93e-3,0.087,0.064
+severe,D>=0.65,30,0.27e-3,0.284,0.195

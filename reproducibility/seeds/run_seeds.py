@@ -38,7 +38,7 @@ CLASS_ORDER = [
     "background", "ground", "roof", "side_facade", "front_facade",
     "beam", "column", "window", "dynamic",
 ]
-DEFAULT_SEEDS = [1337, 2024, 42, 7, 2718]
+DEFAULT_SEEDS = [0, 1, 2, 3, 4]
 
 
 def set_deterministic(seed: int) -> None:

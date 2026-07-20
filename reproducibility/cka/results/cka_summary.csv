@@ -1,0 +1,9 @@
+stage,layer_pair,cka_mean,cka_std,cross_cov_mean,cross_cov_std,corresponding_mIoU
+# Aggregated over 5 seeds {0,1,2,3,4}. Values from the paper appendix table
+# "各阶段 CKA 与 rho_cc 完整统计". Lower CKA/cross_cov => more complementary streams.
+# corresponding_mIoU: the mIoU obtained when fusion stops at that stage ("--" = N/A).
+input_modalities,input_intensity|input_geometry,0.110,0.008,0.091,0.006,
+independent_encoders,enc_intensity|enc_geometry,0.182,0.012,0.138,0.009,62.5
+after_cbam,f2|f2,0.413,0.015,0.331,0.011,69.1
+after_igca,f3|decoder,0.631,0.010,0.522,0.013,73.2
+early_concat_fusion,f3|decoder,0.718,0.014,0.614,0.016,67.9

@@ -4,7 +4,7 @@
 # ds_rangenet_v3.apply_corruption exactly; severity scales the base magnitude.
 
 model_variant: full
-seeds: [1337, 2024, 42, 7, 2718]
+seeds: [0, 1, 2, 3, 4]
 input_hw: [64, 512]
 
 # Severity levels evaluated for every corruption (multiplies the base magnitude

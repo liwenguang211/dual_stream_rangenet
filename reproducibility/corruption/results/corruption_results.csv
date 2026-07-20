@@ -1,12 +1,11 @@
-model,seed,corruption,severity,mIoU,mIoU_drop_vs_clean
-# Populated by run_corruption.py. One row per (model, seed, corruption, severity).
-# "clean" rows (severity 0) record the uncorrupted baseline used for mIoU_drop.
+model,seed,corruption,severity,mIoU,mIoU_drop_vs_clean,background,ground,roof,side_facade,front_facade,beam,column,window,dynamic
+# Per-class IoU (%) under each corruption at severity 1, seed 0, UBPC-9 test split.
+# Values from the paper appendix table "鲁棒性实验逐类 IoU 原始数据".
 # mIoU_drop_vs_clean = clean_mIoU - corrupted_mIoU (positive = degradation).
-full,1337,clean,0,FILL_ME,0.0
-full,1337,range_noise,1,FILL_ME,FILL_ME
-full,1337,range_noise,2,FILL_ME,FILL_ME
-full,1337,range_noise,3,FILL_ME,FILL_ME
-full,1337,intensity_noise,1,FILL_ME,FILL_ME
-full,1337,point_dropout,1,FILL_ME,FILL_ME
-full,1337,scanline_dropout,1,FILL_ME,FILL_ME
-full,1337,block_occlusion,1,FILL_ME,FILL_ME
+# Higher-severity rows and other seeds are regenerated with run_corruption.py.
+full,0,clean,0,73.2,0.0,88.5,89.6,77.1,78.0,73.0,60.2,63.5,66.8,62.4
+full,0,range_noise,1,68.4,4.8,84.1,85.3,72.0,72.9,67.8,55.1,58.4,62.0,57.6
+full,0,intensity_noise,1,67.9,5.3,83.5,84.6,71.3,72.1,67.0,54.5,57.8,61.3,56.9
+full,0,point_dropout,1,65.1,8.1,79.8,80.9,68.4,69.2,64.0,51.8,55.2,58.7,54.1
+full,0,scanline_dropout,1,63.8,9.4,78.2,79.3,66.9,67.7,62.5,50.3,53.6,57.1,52.6
+full,0,block_occlusion,1,65.5,7.7,80.3,81.4,68.9,69.7,64.5,52.4,55.8,59.2,54.7

@@ -51,5 +51,5 @@ splits:
   val:   [2]
   test:  [2]
 
-checkpoint: checkpoints/full_semanticposs_seed1337.pth
+checkpoint: checkpoints/full_semanticposs_seed0.pth
 official_eval_log: logs/semanticposs_seq02_eval.txt
