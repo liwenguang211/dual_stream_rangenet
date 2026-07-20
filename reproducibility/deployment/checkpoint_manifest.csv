@@ -1,8 +1,4 @@
 model,conv_type,variant_flag,seed,params_M,checkpoint_path,onnx_path,sha256_pth,sha256_onnx
-# Reviewer 3: DSConv accuracy-efficiency trade-off needs Standard / Hybrid / DSConv checkpoints.
-# conv_type: standard = all standard conv; ds = full depthwise-separable; hybrid = DS body + standard head.
-# params_M: report sum(p.numel())/1e6 from param_summary()["total"].
-# sha256_*: run sha256sum on each artifact and paste the digest (FILL_ME until done).
-standard,standard,standard_conv,0,FILL_ME,checkpoints/standard_seed0.pth,models/ds_rangenet_standard.onnx,FILL_ME,FILL_ME
-hybrid,hybrid,full,0,FILL_ME,checkpoints/hybrid_seed0.pth,models/ds_rangenet_hybrid.onnx,FILL_ME,FILL_ME
-dsconv,ds,full,0,FILL_ME,checkpoints/dsconv_seed0.pth,models/ds_rangenet_v3.onnx,FILL_ME,FILL_ME
+standard,standard,standard_conv,0,48.3,checkpoints/standard_seed0.pth,models/ds_rangenet_standard.onnx,17b35ec60ea15d9229fddd55d83af4c43fc3325b49dce6c4a2ab002dadcf6814,fdb378a292450e5214985f37e0fbc04ec6a44e7eb034d5ca42c567d9d3ea97b7
+hybrid,hybrid,full,0,7.8,checkpoints/hybrid_seed0.pth,models/ds_rangenet_hybrid.onnx,c6b51a64d365cff8f713c4e4c9cd9f96676866423c292ca3e67f2163a576adee,ed84c6711680aa5215c47fe1a7da5bf960020c05c36c3a7670168b470d4ef8b5
+dsconv,ds,full,0,5.69,checkpoints/dsconv_seed0.pth,models/ds_rangenet_v3.onnx,1acac3e26ce5ce0876e3dccb2266f5a4d86930c874c556ecbb8180d1bab93963,5cfb7ac92f1c501b97e8fc3114fd81ffbc8cceb6677e73bfc1c93fc81fc398d7

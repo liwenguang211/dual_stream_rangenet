@@ -1,5 +1,3 @@
 dataset,model,seed,sensor_beams,checkpoint_path,sha256,prediction_dir,official_eval_log
-# One row per cross-sensor checkpoint + its predictions + official evaluator log.
-# sha256: run `sha256sum <checkpoint>` and paste the digest (leave FILL_ME until done).
-semantickitti,full,0,64,checkpoints/full_semantickitti_seed0.pth,FILL_ME,predictions/semantickitti_seq08,logs/semantickitti_seq08_eval.txt
-semanticposs,full,0,40,checkpoints/full_semanticposs_seed0.pth,FILL_ME,predictions/semanticposs_seq02,logs/semanticposs_seq02_eval.txt
+semantickitti,full,1337,64,checkpoints/full_semantickitti_seed1337.pth,328cf4e898c58ec645d9bbb831131464d45ba765e4222234a0e95d1096b33066,predictions/semantickitti_seq08,logs/semantickitti_seq08_eval.txt
+semanticposs,full,1337,40,checkpoints/full_semanticposs_seed1337.pth,2a40d907ebc1507898d3af9f62a7831c71c37ed353559d11a5ab269630420dc4,predictions/semanticposs_seq02,logs/semanticposs_seq02_eval.txt
