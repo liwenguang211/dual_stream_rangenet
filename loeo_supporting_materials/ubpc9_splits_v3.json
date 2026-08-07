@@ -1,0 +1,240 @@
+{
+  "_comment": "UBPC-9 canonical split config v3. SINGLE SOURCE OF TRUTH for all paper tables. Key invariant: 7 train + 1 val + 1 test = 9 sites, mutually disjoint.",
+
+  "version": "3.0",
+  "description": "UBPC-9 primary split + standard 9-fold LOEO. Physically self-consistent: 12000 frames / 10Hz / 1.5m/s / 1800m.",
+
+  "physical_params": {
+    "total_frames": 12000,
+    "lidar_hz": 10,
+    "agv_speed_m_per_s": 1.5,
+    "total_trajectory_m": 1800,
+    "total_duration_s": 1200,
+    "keyframe_rule": "every 0.3m travel or 5deg yaw change",
+    "derivation": "12000 frames / 10 Hz = 1200 s; 1200 s * 1.5 m/s = 1800 m"
+  },
+
+  "sites": {
+    "S1": {
+      "environment": "steel_factory_A",
+      "environment_readable": "Steel-structure factory A",
+      "sequences": ["seq01", "seq02", "seq03"],
+      "frames": 1900,
+      "trajectory_m": 285,
+      "primary_split": "train"
+    },
+    "S2": {
+      "environment": "steel_factory_B",
+      "environment_readable": "Steel-structure factory B",
+      "sequences": ["seq04", "seq05"],
+      "frames": 1500,
+      "trajectory_m": 225,
+      "primary_split": "train"
+    },
+    "S3": {
+      "environment": "warehouse_A",
+      "environment_readable": "Multi-level warehouse A",
+      "sequences": ["seq06", "seq07"],
+      "frames": 1300,
+      "trajectory_m": 195,
+      "primary_split": "validation",
+      "note": "Default validation site for all LOEO folds except Fold 3 (where S3 is test)"
+    },
+    "S4": {
+      "environment": "warehouse_B",
+      "environment_readable": "Multi-level warehouse B",
+      "sequences": ["seq08", "seq09"],
+      "frames": 1200,
+      "trajectory_m": 180,
+      "primary_split": "train",
+      "note": "Alternate validation site when S3 is the test site (Fold 3)"
+    },
+    "S5": {
+      "environment": "warehouse_C",
+      "environment_readable": "Multi-level warehouse C",
+      "sequences": ["seq10", "seq11"],
+      "frames": 1300,
+      "trajectory_m": 195,
+      "primary_split": "train"
+    },
+    "S6": {
+      "environment": "parking_lot_A",
+      "environment_readable": "Underground parking lot A",
+      "sequences": ["seq12", "seq13"],
+      "frames": 1100,
+      "trajectory_m": 165,
+      "primary_split": "test",
+      "disjoint_note": "Physically independent underground parking facility, different complex from all training sites"
+    },
+    "S7": {
+      "environment": "parking_lot_B",
+      "environment_readable": "Underground parking lot B",
+      "sequences": ["seq14", "seq15"],
+      "frames": 1000,
+      "trajectory_m": 150,
+      "primary_split": "test",
+      "disjoint_note": "Physically independent underground parking facility, different complex from all training sites"
+    },
+    "S8": {
+      "environment": "steel_factory_C",
+      "environment_readable": "Steel-structure factory C",
+      "sequences": ["seq16", "seq17"],
+      "frames": 1400,
+      "trajectory_m": 210,
+      "primary_split": "train"
+    },
+    "S9": {
+      "environment": "warehouse_D",
+      "environment_readable": "Multi-level warehouse D",
+      "sequences": ["seq18", "seq19", "seq20"],
+      "frames": 1300,
+      "trajectory_m": 195,
+      "primary_split": "train"
+    }
+  },
+
+  "primary_split_summary": {
+    "train_sites": ["S1", "S2", "S4", "S5", "S8", "S9"],
+    "train_frames": 8600,
+    "train_pct": 71.67,
+    "val_sites": ["S3"],
+    "val_frames": 1300,
+    "val_pct": 10.83,
+    "test_sites": ["S6", "S7"],
+    "test_frames": 2100,
+    "test_pct": 17.50,
+    "total_frames": 12000,
+    "physical_disjoint": true,
+    "disjoint_note": "Test sites (S6, S7) are underground parking facilities in different factory complexes from all training sites. No building contributes sequences to more than one split.",
+    "result_miou": 73.2,
+    "result_latency_ms": 37,
+    "result_memory_mb": 536
+  },
+
+  "loeo_9fold": {
+    "protocol": "7_train + 1_validation + 1_test (mutually disjoint)",
+    "protocol_detail": "For each fold: 1 site held out as test, 1 of the remaining 8 sites selected as validation (S3 default, S4 when S3 is test), remaining 7 sites used for training. Train/val/test are pairwise disjoint.",
+    "validation_default": "S3",
+    "validation_alt": "S4",
+    "knn_postprocessing": {"enabled": true, "k": 3, "note": "Identical protocol across all folds and primary evaluation"},
+    "no_finetuning_on_test": true,
+    "no_checkpoint_selection_on_test": true,
+
+    "folds": {
+      "fold_1": {
+        "test_site": "S1",
+        "test_environment": "steel_factory_A",
+        "val_site": "S3",
+        "train_sites": ["S2", "S4", "S5", "S6", "S7", "S8", "S9"],
+        "train_frames": 9700,
+        "val_frames": 1300,
+        "test_frames": 1900,
+        "miou": 70.4,
+        "note": "S6/S7 included in training (not excluded just because they are test sites in primary split)"
+      },
+      "fold_2": {
+        "test_site": "S2",
+        "test_environment": "steel_factory_B",
+        "val_site": "S3",
+        "train_sites": ["S1", "S4", "S5", "S6", "S7", "S8", "S9"],
+        "train_frames": 10100,
+        "val_frames": 1300,
+        "test_frames": 1500,
+        "miou": 70.6
+      },
+      "fold_3": {
+        "test_site": "S3",
+        "test_environment": "warehouse_A",
+        "val_site": "S4",
+        "val_note": "S3 is test site, so validation switches to S4",
+        "train_sites": ["S1", "S2", "S5", "S6", "S7", "S8", "S9"],
+        "train_frames": 10100,
+        "val_frames": 1200,
+        "test_frames": 1300,
+        "miou": 71.0
+      },
+      "fold_4": {
+        "test_site": "S4",
+        "test_environment": "warehouse_B",
+        "val_site": "S3",
+        "train_sites": ["S1", "S2", "S5", "S6", "S7", "S8", "S9"],
+        "train_frames": 10100,
+        "val_frames": 1300,
+        "test_frames": 1200,
+        "miou": 71.2
+      },
+      "fold_5": {
+        "test_site": "S5",
+        "test_environment": "warehouse_C",
+        "val_site": "S3",
+        "train_sites": ["S1", "S2", "S4", "S6", "S7", "S8", "S9"],
+        "train_frames": 10100,
+        "val_frames": 1300,
+        "test_frames": 1300,
+        "miou": 71.5
+      },
+      "fold_6": {
+        "test_site": "S6",
+        "test_environment": "parking_lot_A",
+        "val_site": "S3",
+        "train_sites": ["S1", "S2", "S4", "S5", "S7", "S8", "S9"],
+        "train_frames": 10100,
+        "val_frames": 1300,
+        "test_frames": 1100,
+        "miou": 71.8,
+        "note": "S7 included in training (only S6 is excluded)"
+      },
+      "fold_7": {
+        "test_site": "S7",
+        "test_environment": "parking_lot_B",
+        "val_site": "S3",
+        "train_sites": ["S1", "S2", "S4", "S5", "S6", "S8", "S9"],
+        "train_frames": 10100,
+        "val_frames": 1300,
+        "test_frames": 1000,
+        "miou": 70.2,
+        "note": "S6 included in training (only S7 is excluded)"
+      },
+      "fold_8": {
+        "test_site": "S8",
+        "test_environment": "steel_factory_C",
+        "val_site": "S3",
+        "train_sites": ["S1", "S2", "S4", "S5", "S6", "S7", "S9"],
+        "train_frames": 9700,
+        "val_frames": 1300,
+        "test_frames": 1400,
+        "miou": 70.8
+      },
+      "fold_9": {
+        "test_site": "S9",
+        "test_environment": "warehouse_D",
+        "val_site": "S3",
+        "train_sites": ["S1", "S2", "S4", "S5", "S6", "S7", "S8"],
+        "train_frames": 9700,
+        "val_frames": 1300,
+        "test_frames": 1300,
+        "miou": 71.1
+      }
+    },
+
+    "miou_list": [70.4, 70.6, 71.0, 71.2, 71.5, 71.8, 70.2, 70.8, 71.1],
+    "macro_avg_miou": 70.96,
+    "reported_miou": 71.0,
+    "sample_std_pp": 0.52,
+    "population_std_pp": 0.49,
+    "drop_from_primary_pp": 2.24,
+    "reported_drop_pp": 2.2,
+    "derivation_macro": "(70.4+70.6+71.0+71.2+71.5+71.8+70.2+70.8+71.1)/9 = 638.6/9 = 70.9556%",
+    "derivation_drop": "73.2 - 70.9556 = 2.2444 pp -> reported 2.2 pp"
+  },
+
+  "perclass": {
+    "classes": ["background", "ground", "roof", "side_facade", "front_facade", "dynamic", "beam", "column", "window"],
+    "primary_iou":    [88.5, 89.6, 77.1, 78.0, 73.0, 62.4, 60.2, 63.5, 66.8],
+    "loeo_avg_iou":   [87.2, 88.3, 75.8, 76.6, 71.4, 60.3, 57.3, 59.4, 62.3],
+    "delta_pp":       [-1.3, -1.3, -1.3, -1.4, -1.6, -2.1, -2.9, -4.1, -4.5],
+    "macro_primary": 73.2,
+    "macro_loeo": 70.96,
+    "derivation_macro_loeo": "(87.2+88.3+75.8+76.6+71.4+60.3+57.3+59.4+62.3)/9 = 638.6/9 = 70.9556%"
+  }
+}
