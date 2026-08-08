@@ -1,0 +1,29 @@
+================================================================================
+Experiment: Modality controls (validation, seed 0)
+Seed: 0
+Training split: S1,S2,S4,S5,S8,S9 (6 sites, site-disjoint)
+Validation split: S3 (1 site)
+Test split: S6,S7 (2 sites)
+Projection: 64x512, range-normalized to [0,1]
+Voxel PCA: 0.2m grid, 8 nearest neighbors
+Training: 300 epochs, batch 8, AdamW lr=1e-3, cosine decay
+Checkpoint selection: highest validation mIoU (no KNN)
+KNN: k=5, window=3x3
+Hardware: NVIDIA RTX 3090 (train), Jetson AGX Orin (inference)
+Commit: a3f7c2e
+================================================================================
+
+--- Separately trained models ---
+  Geometry-only model:   58.27%  (trained without reflectance)
+  Reflectance-only model: 56.83%  (trained without geometry)
+  Early fusion model:     67.89%  (16ch concat, separately trained)
+
+--- Inference perturbations (same DS-RangeNet checkpoint, seed 0) ---
+  Intensity missing:       65.38%
+  Intensity corrupted:      66.12%
+  Geometry sparse (30%):    67.28%
+  Cross-frame mismatch:     64.72%
+    delta=1:  65.91%
+    delta=5:  65.21%
+    delta=10: 65.08%
+    delta=20: 64.18%

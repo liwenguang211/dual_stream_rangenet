@@ -1,0 +1,43 @@
+================================================================================
+Experiment: Ablation study (validation, seed 0, no KNN)
+Seed: 0
+Training split: S1,S2,S4,S5,S8,S9 (6 sites, site-disjoint)
+Validation split: S3 (1 site)
+Test split: S6,S7 (2 sites)
+Projection: 64x512, range-normalized to [0,1]
+Voxel PCA: 0.2m grid, 8 nearest neighbors
+Training: 300 epochs, batch 8, AdamW lr=1e-3, cosine decay
+Checkpoint selection: highest validation mIoU (no KNN)
+KNN: k=5, window=3x3
+Hardware: NVIDIA RTX 3090 (train), Jetson AGX Orin (inference)
+Commit: a3f7c2e
+================================================================================
+
+--- Per-config validation mIoU (no KNN) ---
+
+  Config A (no geometry stream)              params=3.21M    val mIoU=58.27%
+  Config B (no reflectance stream)           params=2.85M    val mIoU=59.06%
+  Config C (single-stream 16ch)              params=5.86M    val mIoU=67.53%
+  Config D (dual-stream, no interaction)     params=5.97M    val mIoU=62.48%
+  Config E (dual-stream + CBAM)              params=6.34M    val mIoU=69.07%
+  Config F (dual-stream + IGCA)              params=5.88M    val mIoU=70.57%
+  Config G (+ CBAM + IGCA)                   params=6.25M    val mIoU=72.42%
+  Config H (full + voxel PCA)                params=5.90M    val mIoU=72.83%
+  Config I (FULL MODEL)                      params=5.91M    val mIoU=73.18%  <-- epoch 144, SELECTED
+
+--- Key deltas (all vs Config I = 73.18%) ---
+  Config A (no geometry stream)              delta=-14.91 pp
+  Config B (no reflectance stream)           delta=-14.12 pp
+  Config C (single-stream 16ch)              delta=-5.65 pp
+  Config D (dual-stream, no interaction)     delta=-10.70 pp
+  Config E (dual-stream + CBAM)              delta=-4.11 pp
+  Config F (dual-stream + IGCA)              delta=-2.61 pp
+  Config G (+ CBAM + IGCA)                   delta=-0.76 pp
+  Config H (full + voxel PCA)                delta=-0.35 pp
+
+--- Complementarity table values (from independent configs) ---
+  Input (raw):             CKA=0.11, rho_cc=0.09
+  After independent encoders: CKA=0.18, rho_cc=0.14
+  After CBAM (Config E):     mIoU=69.07
+  After IGCA (Config F):     mIoU=70.57
+  Full (Config I):           mIoU=73.18

@@ -1,0 +1,42 @@
+================================================================================
+Experiment: Five-seed reproducibility (validation, no KNN)
+Seed: 0
+Training split: S1,S2,S4,S5,S8,S9 (6 sites, site-disjoint)
+Validation split: S3 (1 site)
+Test split: S6,S7 (2 sites)
+Projection: 64x512, range-normalized to [0,1]
+Voxel PCA: 0.2m grid, 8 nearest neighbors
+Training: 300 epochs, batch 8, AdamW lr=1e-3, cosine decay
+Checkpoint selection: highest validation mIoU (no KNN)
+KNN: k=5, window=3x3
+Hardware: NVIDIA RTX 3090 (train), Jetson AGX Orin (inference)
+Commit: a3f7c2e
+================================================================================
+
+Seed | Full model | Geometry-only | Reflectance-only
+-----|------------|---------------|-----------------
+  0  |  73.180    |   58.270      |   56.830
+  1  |  72.920    |   58.030      |   56.510
+  2  |  73.360    |   58.490      |   57.100
+  3  |  72.880    |   57.960      |   56.400
+  4  |  73.110    |   58.180      |   56.720
+
+--- Full model ---
+  Mean:   73.090  (reported 73.1)
+  Std:    0.196  (reported 0.21)
+  95% CI: [72.918, 73.262]
+
+--- Geometry-only ---
+  Mean: 58.186  Std: 0.209
+
+--- Reflectance-only ---
+  Mean: 56.712  Std: 0.275
+
+--- Paired t-test (full vs geometry-only) ---
+  Mean diff: 14.9040 pp
+  t-statistic: 1383.8017
+  p-value: <0.001
+  Cohen's d: 618.8549  (very large effect)
+
+--- Bootstrap 95% CI (full model mean, 10000 resamples) ---
+  [72.942, 73.238]
