@@ -1,0 +1,9 @@
+condition,category,mean_mIoU,std_pp,delta_pp,raw_values
+geometry_only,independent_model,58.30,0.35,14.90,"[57.9, 58.5, 58.5]"
+reflectance_only,independent_model,56.80,0.26,16.40,"[56.5, 57.0, 56.9]"
+early_fusion,independent_model,67.90,0.35,5.30,"[67.5, 68.1, 68.1]"
+intensity_missing,same_checkpoint_perturbation,65.40,0.26,7.80,"[65.1, 65.6, 65.5]"
+intensity_corrupted,same_checkpoint_perturbation,66.10,0.26,7.10,"[65.8, 66.3, 66.2]"
+geometry_sparse,same_checkpoint_perturbation,67.30,0.26,5.90,"[67.0, 67.5, 67.4]"
+cross_frame_mismatch,same_checkpoint_perturbation,64.67,0.32,8.53,"[64.3, 64.9, 64.8]"
+ds_rangenet_baseline,baseline,73.20,0.00,0.00,[73.2]

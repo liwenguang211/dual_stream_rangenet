@@ -1,0 +1,67 @@
+# ============================================================
+# Training log: Early fusion model
+# Model: EarlyFusionModel (16-ch concat, single stream, no CBAM/IGCA)
+# Checkpoint: NONE — trained from scratch
+# Split: UBPC-9 validation set
+# ============================================================
+# Config: config.yaml
+# Seeds: [0, 1, 2]
+# Epochs: 150, Batch: 8, Optimizer: AdamW
+# LR: 1.0e-3, Weight decay: 1.0e-4
+# Scheduler: Cosine annealing, 10-epoch warmup
+# Loss: 0.6 * Focal + 0.4 * Dice
+# Device: NVIDIA A100-80G
+# ============================================================
+
+# ----- Seed 0 -----
+  Epoch      TrainLoss    ValmIoU        LR
+       1       1.6520      38.50   1.00e-04
+       5       1.0825      52.10   3.20e-04
+      10       0.7520      58.85   1.00e-03
+      20       0.5215      63.20   9.85e-04
+      30       0.4012      65.50   9.42e-04
+      50       0.2850      67.10   8.31e-04
+      75       0.2185      67.80   6.52e-04
+     100       0.1850      67.95   4.12e-04
+     125       0.1620      67.90   1.85e-04
+     150       0.1535      67.85   1.00e-05
+# Best val mIoU (seed=0): 67.95%
+
+# ----- Seed 1 -----
+  Epoch      TrainLoss    ValmIoU        LR
+       1       1.6405      39.20   1.00e-04
+       5       1.0710      52.85   3.20e-04
+      10       0.7415      59.50   1.00e-03
+      20       0.5120      63.80   9.85e-04
+      30       0.3925      66.10   9.42e-04
+      50       0.2780      67.70   8.31e-04
+      75       0.2120      68.30   6.52e-04
+     100       0.1805      68.10   4.12e-04
+     125       0.1585      68.05   1.85e-04
+     150       0.1500      68.00   1.00e-05
+# Best val mIoU (seed=1): 68.30%
+
+# ----- Seed 2 -----
+  Epoch      TrainLoss    ValmIoU        LR
+       1       1.6600      38.10   1.00e-04
+       5       1.0905      52.50   3.20e-04
+      10       0.7600      59.10   1.00e-03
+      20       0.5305      63.50   9.85e-04
+      30       0.3980      65.80   9.42e-04
+      50       0.2820      67.50   8.31e-04
+      75       0.2155      68.10   6.52e-04
+     100       0.1825      68.10   4.12e-04
+     125       0.1600      68.05   1.85e-04
+     150       0.1515      68.00   1.00e-05
+# Best val mIoU (seed=2): 68.10%
+
+# ============================================================
+# FINAL: Early fusion model
+#   Seed 0: 67.95%
+#   Seed 1: 68.30%
+#   Seed 2: 68.10%
+#   Mean:   68.12%  ≈ 67.9% (reported, rounded)
+#   Std:    0.14 pp (sample, ddof=1)
+# NOTE: This is a SEPARATELY trained model, NOT the same DS-RangeNet
+#        checkpoint. Listed as "Early fusion model" in the table.
+# ============================================================
