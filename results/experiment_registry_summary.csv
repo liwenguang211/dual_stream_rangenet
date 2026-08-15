@@ -1,0 +1,42 @@
+id,description,method,seed,split,checkpoint,val_miou,test_miou,knn,git
+main_primary,DS-RangeNet primary comparison (Line T: test; per-method val,ds_rangenet,0,test_S6_S7,ds_rangenet_seed0_ep138_miou73.16.pth,73.16,72.61,yes,a3f7c2e
+dsconv_0,DSConv backbone ablation A (RI only 2ch) (Line D: validation,dsconv,0,validation_S3,dsconv_seed0_ep112_miou56.80.pth,56.80,NA,no,a3f7c2e
+dsconv_1,DSConv backbone ablation B (Geo only 6ch) (Line D: validatio,dsconv,1,validation_S3,dsconv_seed1_ep118_miou58.30.pth,58.30,NA,no,a3f7c2e
+dsconv_2,DSConv backbone ablation C (Dual raw 8ch) (Line D: validatio,dsconv,2,validation_S3,dsconv_seed2_ep125_miou62.50.pth,62.50,NA,no,a3f7c2e
+dsconv_3,DSConv backbone ablation D (+VoxPCA) (Line D: validation; se,dsconv,3,validation_S3,dsconv_seed3_ep130_miou64.80.pth,64.80,NA,no,a3f7c2e
+dsconv_4,DSConv backbone ablation E (+ICurv) (Line D: validation; see,dsconv,4,validation_S3,dsconv_seed4_ep133_miou66.30.pth,66.30,NA,no,a3f7c2e
+full_0,Full model +CBAM only (Line V: validation; seed 0; no KNN; 3,ds_rangenet_full,0,validation_S3,ds_rangenet_seed0_ep118_miou69.10.pth,69.10,NA,no,a3f7c2e
+full_1,Full model +IGCA GtoI (Line V: validation; seed 0; no KNN; 4,ds_rangenet_full,1,validation_S3,ds_rangenet_seed1_ep128_miou71.00.pth,71.00,NA,no,a3f7c2e
+full_2,Full model +IGCA bidir (Line V: validation; seed 0; no KNN; ,ds_rangenet_full,2,validation_S3,ds_rangenet_seed2_ep134_miou72.40.pth,72.40,NA,no,a3f7c2e
+full_3,Full DS-RangeNet +ICB (Line V: validation; seed 0; epoch 138,ds_rangenet_full,3,validation_S3,ds_rangenet_seed3_ep138_miou73.18.pth,73.18,NA,no,a3f7c2e
+full_4,Full DS-RangeNet +ICB (Line V: validation; seed 0; epoch 138,ds_rangenet_full,4,validation_S3,ds_rangenet_seed4_ep138_miou73.18.pth,73.18,NA,yes,a3f7c2e
+seed_statistics,5-seed statistics DS-RangeNet (Line S: validation; five seed,ds_rangenet,0,validation_S3,ds_rangenet_seed0_ep138_miou73.18.pth,73.18,NA,no,a3f7c2e
+seed_statistics_rangeformer,5-seed statistics RangeFormer control (Line S: validation; f,rangeformer,0,validation_S3,rangeformer_seed0_ep142_miou67.52.pth,67.10,NA,no,a3f7c2e
+seed_statistics_crossattn,5-seed statistics conventional cross-attention control (Line,conventional_cross_attn,0,validation_S3,convattn_seed0_ep126_miou71.50.pth,71.40,NA,no,a3f7c2e
+loeo_1,LOEO fold 1 (held-out S1 Steel factory A; val S3; KNN),ds_rangenet,0,test_S1,ds_rangenet_loeo1_ep135_miou70.40.pth,70.40,NA,yes,a3f7c2e
+loeo_2,LOEO fold 2 (held-out S2 Steel factory B; val S3; KNN),ds_rangenet,0,test_S2,ds_rangenet_loeo2_ep135_miou70.60.pth,70.60,NA,yes,a3f7c2e
+loeo_3,LOEO fold 3 (held-out S3 Warehouse A; val S4; KNN),ds_rangenet,0,test_S3,ds_rangenet_loeo3_ep135_miou71.00.pth,71.00,NA,yes,a3f7c2e
+loeo_4,LOEO fold 4 (held-out S4 Warehouse B; val S3; KNN),ds_rangenet,0,test_S4,ds_rangenet_loeo4_ep135_miou71.20.pth,71.20,NA,yes,a3f7c2e
+loeo_5,LOEO fold 5 (held-out S5 Warehouse C; val S3; KNN),ds_rangenet,0,test_S5,ds_rangenet_loeo5_ep135_miou71.50.pth,71.50,NA,yes,a3f7c2e
+loeo_6,LOEO fold 6 (held-out S6 Parking lot A; val S3; KNN),ds_rangenet,0,test_S6,ds_rangenet_loeo6_ep135_miou71.80.pth,71.80,NA,yes,a3f7c2e
+loeo_7,LOEO fold 7 (held-out S7 Parking lot B; val S3; KNN),ds_rangenet,0,test_S7,ds_rangenet_loeo7_ep135_miou70.20.pth,70.20,NA,yes,a3f7c2e
+loeo_8,LOEO fold 8 (held-out S8 Steel factory C; val S3; KNN),ds_rangenet,0,test_S8,ds_rangenet_loeo8_ep135_miou70.80.pth,70.80,NA,yes,a3f7c2e
+loeo_9,LOEO fold 9 (held-out S9 Warehouse D; val S3; KNN),ds_rangenet,0,test_S9,ds_rangenet_loeo9_ep135_miou71.10.pth,71.10,NA,yes,a3f7c2e
+modality_controls,Modality control conditions (Line V: validation; seed 0; no ,ds_rangenet_full,0,validation_S3,ds_rangenet_seed0_ep138_miou73.18.pth,73.18,NA,no,a3f7c2e
+modality_perturb,Inference-time modality perturbations (Line V; frozen ep138 ,ds_rangenet_full,0,validation_S3,ds_rangenet_seed0_ep138_miou73.18.pth,73.18,NA,no,a3f7c2e
+igca_ablation,IGCA design ablation (Line D: validation; no KNN; pooled ref,ds_rangenet_full,0,validation_S3,ds_rangenet_igca_seed0_ep130_miou71.60.pth,71.60,NA,no,a3f7c2e
+loss_ablation,Loss function ablation (Line D: validation; no KNN),ds_rangenet_full,0,validation_S3,ds_rangenet_loss_seed0_ep132_miou71.60.pth,71.60,NA,no,a3f7c2e
+attention_control,IGCA vs conventional cross-attention (Line V: validation; se,ds_rangenet_full,0,validation_S3,ds_rangenet_attn_seed0_ep136_miou73.20.pth,73.20,NA,no,a3f7c2e
+dsconv_tradeoff,DSConv vs standard convolution trade-off (Line T: test; KNN),ds_rangenet_full,0,test_S6_S7,ds_rangenet_seed0_ep138_miou73.16.pth,73.16,72.61,yes,a3f7c2e
+robustness,21-condition corruption robustness (Line T: test; KNN; 7 fam,ds_rangenet_full,0,test_S6_S7,ds_rangenet_seed0_ep138_miou73.16.pth,73.16,72.61,yes,a3f7c2e
+cross_sensor_mid360,Mid-360 reference checkpoint (Line C: cross-sensor; dedicate,ds_rangenet,0,test_mid360,ds_rangenet_mid360_seed0_ep140_miou71.60.pth,71.60,71.00,yes,a3f7c2e
+cross_sensor_helios32_zero,RS-Helios32 zero-shot transfer (Line C: cross-sensor; no fin,ds_rangenet,0,test_helios32,ds_rangenet_mid360_seed0_ep140_miou71.60.pth,66.90,66.20,yes,a3f7c2e
+cross_sensor_helios32_ft,RS-Helios32 10pct fine-tune 5 seeds (Line C: cross-sensor; 5,ds_rangenet,0,test_helios32_ft,ds_rangenet_helios_ft_seed0_ep85_miou69.80.pth,69.82,69.10,yes,a3f7c2e
+cross_sensor_semantickitti,SemanticKITTI validation (Line P: official split; KNN),ds_rangenet,0,official_val_seq08,ds_rangenet_semantickitti_seed0_ep120_miou61.90.pth,61.90,NA,yes,a3f7c2e
+cross_sensor_semanticposs,SemanticPOSS validation (Line P: official split; KNN),ds_rangenet,0,official_val_seq02,ds_rangenet_semanticposs_seed0_ep115_miou54.10.pth,54.10,NA,yes,a3f7c2e
+deployment,Jetson AGX Orin 60-min endurance (Line T: test; KNN; MAXN mo,ds_rangenet,0,test_S6_S7,ds_rangenet_v3.onnx,NA,NA,yes,a3f7c2e
+per_class_iou,Per-class IoU DS-RangeNet test set (Line T: test; KNN),ds_rangenet,0,test_S6_S7,ds_rangenet_seed0_ep138_miou73.16.pth,NA,NA,yes,a3f7c2e
+represent_similarity,Representation similarity CKA/cross-covariance (Line V: vali,ds_rangenet_full,0,validation_S3,ds_rangenet_seed0_ep138_miou73.18.pth,NA,NA,no,a3f7c2e
+alpha_beta_gates,Learned IGCA scaling factors alpha/beta (Line V: 5 seeds),ds_rangenet_full,0,validation_S3,ds_rangenet_seed0_ep138_miou73.18.pth,NA,NA,no,a3f7c2e
+convergence_curves,Training convergence curves all methods (Line T: validation),ds_rangenet,0,validation_S3,ds_rangenet_seed0_ep138_miou73.18.pth,NA,NA,no,a3f7c2e
+inference_efficiency,Per-frame inference efficiency breakdown (Line T: Jetson GPU,ds_rangenet,0,test_S6_S7,ds_rangenet_v3.onnx,NA,NA,yes,a3f7c2e

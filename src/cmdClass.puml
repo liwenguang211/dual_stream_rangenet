@@ -1,0 +1,259 @@
+@startuml AGV指令解析系统类图
+
+' 设置主题
+skinparam {
+  classBackgroundColor #F5F5F5
+  classBorderColor #333333
+  classArrowColor #333333
+  backgroundColor #FFFFFF
+}
+
+' 定义包和命名空间
+package "AGV指令解析系统" {
+  ' 核心接口
+  interface ICommand {
+    +{abstract} execute(): CommandResult
+    +{abstract} validate(): ValidationResult
+    +{abstract} getCommandType(): CommandType
+    +{abstract} toJson(): string
+    +{abstract} fromJson(json: string): void
+  }
+
+  interface ICommandParser {
+    +{abstract} parse(rawData: byte[]): ICommand
+    +{abstract} parseJson(json: string): ICommand
+    +{abstract} getSupportedCommands(): List<CommandType>
+  }
+
+
+
+
+  ' 枚举类型
+  enum CommandType {
+    MOV_PATH               轨迹点运行指令
+    MOVL   直线运行指令
+    MOVC   圆弧运行指令
+    MOVJ 关节运行指令
+    MOVS 自由曲线运行指令
+    GCMD G代码指令
+    MCMD M代码指令
+    MOVD PTP运动
+    JOG  机器人坐标系运动
+    AJOG 关节坐标系运动
+    VLS  运行速度设定
+    ADF  加速度比例设定
+    KSN  坐标系激活 sys/world/Tool
+    KSW  世界坐标系设定
+    KST  工具坐标系设定
+    DI_  输入查询
+    DO   输出控制
+    HLT   暂停
+    COT   继续
+    POW   使能
+  }
+
+  enum CommandPriority {
+    LOW
+    NORMAL
+    HIGH
+    CRITICAL
+  }
+
+
+  enum ExecutionStatus {
+    PENDING
+    EXECUTING
+    SUCCESS
+    FAILED
+    CANCELLED
+  }
+
+  ' 数据传输对象
+  class CommandResult {
+    -commandId: string
+    -status: ExecutionStatus
+    -timestamp: DateTime
+    -message: string
+    -errorCode: string
+    -details: Map<string, object>
+    +isSuccess(): boolean
+    +getExecutionTime(): TimeSpan
+    +toJson(): string
+  }
+
+  ' 基础抽象类
+  abstract class BaseCommand {
+    #commandId: string
+    #timestamp: DateTime
+    #priority: CommandPriority
+    #source: string
+    #requiresAck: boolean
+    +BaseCommand()
+    +BaseCommand(commandId: string)
+    +generateCommandId(): string
+    +{abstract} execute(): CommandResult
+    +{abstract} validate(): ValidationResult
+    +{abstract} getCommandType(): CommandType
+    +toJson(): string
+    +fromJson(json: string): void
+  }
+
+  ' 具体命令类
+  class MoveCommand {
+    -targetPosition: Position
+    -speed: double
+    -acceleration: double
+    -pathId: string
+    -avoidObstacles: boolean
+    +MoveCommand()
+    +MoveCommand(target: Position, speed: double)
+    +execute(): CommandResult
+    +validate(): ValidationResult
+    +getCommandType(): CommandType
+    +calculateEstimatedTime(): TimeSpan
+  }
+
+
+  class LoadCommand {
+    -loadStationId: string
+    -loadType: LoadType
+    -weight: double
+    -dimensions: Dimensions
+    +LoadCommand()
+    +LoadCommand(stationId: string, loadType: LoadType)
+    +execute(): CommandResult
+    +validate(): ValidationResult
+    +getCommandType(): CommandType
+  }
+
+  class EmergencyStopCommand {
+    -reason: EmergencyReason
+    -immediate: boolean
+    +EmergencyStopCommand()
+    +EmergencyStopCommand(reason: EmergencyReason)
+    +execute(): CommandResult
+    +validate(): ValidationResult
+    +getCommandType(): CommandType
+  }
+
+  ' 解析器类
+  class CommandParser {
+    -jsonParser: JsonCommandParser
+    -binaryParser: BinaryCommandParser
+    -validators: List<ICommandValidator>
+    +CommandParser()
+    +parse(rawData: byte[]): ICommand
+    +parseJson(json: string): ICommand
+    +parseBinary(binaryData: byte[]): ICommand
+    +getSupportedCommands(): List<CommandType>
+    +registerCustomCommand(commandType: CommandType, parser: function): void
+  }
+
+  class JsonCommandParser {
+    -jsonSerializer: JsonSerializer
+    +parse(json: string): ICommand
+    +serialize(command: ICommand): string
+    +validateJsonSchema(json: string): ValidationResult
+  }
+
+
+
+  ' 命令处理器
+  class CommandProcessor {
+    -commandQueue: PriorityQueue<ICommand>
+    -currentCommand: ICommand
+    -commandHistory: List<CommandHistoryRecord>
+    -agvController: AGVController
+    +CommandProcessor(agvController: AGVController)
+    +processCommand(command: ICommand): CommandResult
+    +queueCommand(command: ICommand): string
+    +cancelCommand(commandId: string): boolean
+    +getCommandStatus(commandId: string): ExecutionStatus
+    +getCommandHistory(filter: CommandFilter): List<CommandHistoryRecord>
+  }
+
+  class AGVController {
+    -agvState: AGVState
+    -navigationSystem: NavigationSystem
+    -batterySystem: BatterySystem
+    -loadHandler: LoadHandler
+    +executeMoveCommand(command: MoveCommand): CommandResult
+    +executeStopCommand(command: StopCommand): CommandResult
+    +executeLoadCommand(command: LoadCommand): CommandResult
+    +getCurrentState(): AGVState
+  }
+
+  ' 辅助类
+  class Position {
+    -x: double
+    -y: double
+    -z: double
+    -orientation: double
+    +Position(x: double, y: double)
+    +Position(x: double, y: double, z: double, orientation: double)
+    +calculateDistance(target: Position): double
+    +toJson(): string
+  }
+
+  class AGVState {
+    -currentPosition: Position
+    -batteryLevel: double
+    -currentSpeed: double
+    -loadStatus: LoadStatus
+    -operationMode: OperationMode
+    -errorCodes: List<string>
+    +updatePosition(position: Position): void
+    +updateBattery(level: double): void
+    +setLoadStatus(status: LoadStatus): void
+    +addError(errorCode: string): void
+    +clearErrors(): void
+    +toJson(): string
+  }
+
+  class CommandHistoryRecord {
+    -recordId: string
+    -command: ICommand
+    -result: CommandResult
+    -startTime: DateTime
+    -endTime: DateTime
+    +getDuration(): TimeSpan
+    +toJson(): string
+  }
+
+' 关系定义
+BaseCommand ..|> ICommand
+MoveCommand --|> BaseCommand
+LoadCommand --|> BaseCommand
+EmergencyStopCommand --|> BaseCommand
+
+CommandParser ..|> ICommandParser
+JsonCommandParser --|> CommandParser
+
+
+
+CommandProcessor "1" --> "1" AGVController : 使用
+CommandProcessor "1" --> "*" CommandHistoryRecord : 维护历史记录
+AGVController "1" --> "1" AGVState : 维护状态
+
+MoveCommand "1" --> "1" Position : 包含目标位置
+LoadCommand "1" --> "1" LoadType : 指定货物类型
+
+
+CommandParser "1" --> "*" ICommand : 解析生成
+
+
+note top of CommandProcessor
+  负责命令的排队、调度和执行
+  支持优先级处理和命令取消
+end note
+
+
+' note left of MoveCommand
+'   移动命令包含：
+'   - 目标位置
+'   - 速度参数
+'   - 路径规划
+'   - 避障设置
+' end note
+
+@enduml

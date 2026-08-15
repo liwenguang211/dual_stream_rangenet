@@ -1,0 +1,3 @@
+label,mean_gain_pp,ci_low_pp,ci_high_pp,cohens_dz,wilcoxon_p,r_rank_biserial
+DS-RangeNet vs. RangeFormer,5.952,5.762,6.142,24.29,0.0625,1.0
+DS-RangeNet vs. Conv.CA,1.728,1.68,1.776,27.43,0.0625,1.0

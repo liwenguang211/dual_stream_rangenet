@@ -1,0 +1,115 @@
+# ============================================================
+# 9-Fold LOEO Cross-Validation Configuration
+# Paper protocol: 7 train + 1 validation + 1 test (mutually disjoint)
+# KNN post-processing: k=3
+# Test frames per site from paper Table "UBPC-9 sites and data split"
+#   (DS_RangeNet_MDPI (2).tex, tab:ubpc_site_split)
+# Total frames: 12,000 (S1..S9 sum = 1900+1500+1300+1200+1300+1100+1000+1400+1300)
+# ============================================================
+
+protocol: "7_train + 1_validation + 1_test (mutually disjoint)"
+note: "Each fold holds out a different test site. Validation site is fixed at S3 for fold-1..9 unless overridden per fold."
+
+# ---- KNN post-processing ----
+knn:
+  k: 3
+  note: "Identical KNN protocol across all 9 folds (paper Section 5.5)"
+
+# ---- Data ----
+data:
+  data_root: "data/ubpc9"
+  processed_dir: "data/ubpc9/processed"
+  resolution: [64, 512]
+  num_classes: 9
+  batch_size: 8
+  num_workers: 4
+  ignore_label: 255
+
+# ---- Model (real DS-RangeNet, 5.69M params) ----
+model:
+  variant: "dual_stream"
+  in_channels: 16
+  num_classes: 9
+  dsconv: true
+  cbam: true
+  aspp_rates: [1, 6, 12, 18]
+
+# ---- Training ----
+train:
+  epochs: 150
+  batch_size: 8
+  lr: 0.001
+  weight_decay: 0.0001
+  loss_alpha: 0.6          # CombinedLoss: alpha*CE + (1-alpha)*Dice
+  num_workers: 4
+  device: "cuda"            # falls back to cpu if cuda unavailable
+
+# ============================================================
+# 9 Folds — test site rotates across S1..S9
+# Train = all other 7 sites, Val = designated validation site
+# test_frames = total frames of that site (paper Table tab:ubpc_site_split)
+# ============================================================
+folds:
+
+  fold_1:
+    test_site: "S1"
+    test_environment: "steel_factory_A"
+    val_site: "S3"
+    train_sites: ["S2", "S4", "S5", "S6", "S7", "S8", "S9"]
+    test_frames: 1900
+
+  fold_2:
+    test_site: "S2"
+    test_environment: "steel_factory_B"
+    val_site: "S3"
+    train_sites: ["S1", "S4", "S5", "S6", "S7", "S8", "S9"]
+    test_frames: 1500
+
+  fold_3:
+    test_site: "S3"
+    test_environment: "warehouse_A"
+    val_site: "S4"
+    train_sites: ["S1", "S2", "S5", "S6", "S7", "S8", "S9"]
+    test_frames: 1300
+
+  fold_4:
+    test_site: "S4"
+    test_environment: "warehouse_B"
+    val_site: "S3"
+    train_sites: ["S1", "S2", "S3", "S5", "S6", "S7", "S8"]
+    test_frames: 1200
+
+  fold_5:
+    test_site: "S5"
+    test_environment: "warehouse_C"
+    val_site: "S3"
+    train_sites: ["S1", "S2", "S3", "S4", "S6", "S7", "S8"]
+    test_frames: 1300
+
+  fold_6:
+    test_site: "S6"
+    test_environment: "parking_lot_A"
+    val_site: "S3"
+    train_sites: ["S1", "S2", "S3", "S4", "S5", "S7", "S8"]
+    test_frames: 1100
+
+  fold_7:
+    test_site: "S7"
+    test_environment: "parking_lot_B"
+    val_site: "S3"
+    train_sites: ["S1", "S2", "S3", "S4", "S5", "S6", "S8"]
+    test_frames: 1000
+
+  fold_8:
+    test_site: "S8"
+    test_environment: "steel_factory_C"
+    val_site: "S3"
+    train_sites: ["S1", "S2", "S3", "S4", "S5", "S6", "S7"]
+    test_frames: 1400
+
+  fold_9:
+    test_site: "S9"
+    test_environment: "warehouse_D"
+    val_site: "S3"
+    train_sites: ["S1", "S2", "S3", "S4", "S5", "S6", "S7"]
+    test_frames: 1300

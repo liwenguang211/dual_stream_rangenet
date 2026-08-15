@@ -1,0 +1,126 @@
+{
+  "description": "Training log summary — links logs to checkpoints",
+  "git_commit": "a3f7c2e",
+  "entries": [
+    {
+      "model": "rangeformer",
+      "seed": 0,
+      "best_epoch": 139,
+      "val_miou_best": 67.52,
+      "log_file": "train_log_rangeformer_seed0.txt",
+      "ckpt_file": "rangeformer_seed0_ep139_miou67.52.pth"
+    },
+    {
+      "model": "rangeformer",
+      "seed": 1,
+      "best_epoch": 141,
+      "val_miou_best": 66.83,
+      "log_file": "train_log_rangeformer_seed1.txt",
+      "ckpt_file": "rangeformer_seed1_ep141_miou66.83.pth"
+    },
+    {
+      "model": "rangeformer",
+      "seed": 2,
+      "best_epoch": 130,
+      "val_miou_best": 67.4,
+      "log_file": "train_log_rangeformer_seed2.txt",
+      "ckpt_file": "rangeformer_seed2_ep130_miou67.40.pth"
+    },
+    {
+      "model": "rangeformer",
+      "seed": 3,
+      "best_epoch": 126,
+      "val_miou_best": 66.71,
+      "log_file": "train_log_rangeformer_seed3.txt",
+      "ckpt_file": "rangeformer_seed3_ep126_miou66.71.pth"
+    },
+    {
+      "model": "rangeformer",
+      "seed": 4,
+      "best_epoch": 134,
+      "val_miou_best": 67.03,
+      "log_file": "train_log_rangeformer_seed4.txt",
+      "ckpt_file": "rangeformer_seed4_ep134_miou67.03.pth"
+    },
+    {
+      "model": "convca",
+      "seed": 0,
+      "best_epoch": 134,
+      "val_miou_best": 71.5,
+      "log_file": "train_log_convca_seed0.txt",
+      "ckpt_file": "convca_seed0_ep134_miou71.50.pth"
+    },
+    {
+      "model": "convca",
+      "seed": 1,
+      "best_epoch": 133,
+      "val_miou_best": 71.09,
+      "log_file": "train_log_convca_seed1.txt",
+      "ckpt_file": "convca_seed1_ep133_miou71.09.pth"
+    },
+    {
+      "model": "convca",
+      "seed": 2,
+      "best_epoch": 134,
+      "val_miou_best": 71.49,
+      "log_file": "train_log_convca_seed2.txt",
+      "ckpt_file": "convca_seed2_ep134_miou71.49.pth"
+    },
+    {
+      "model": "convca",
+      "seed": 3,
+      "best_epoch": 142,
+      "val_miou_best": 71.11,
+      "log_file": "train_log_convca_seed3.txt",
+      "ckpt_file": "convca_seed3_ep142_miou71.11.pth"
+    },
+    {
+      "model": "convca",
+      "seed": 4,
+      "best_epoch": 127,
+      "val_miou_best": 71.42,
+      "log_file": "train_log_convca_seed4.txt",
+      "ckpt_file": "convca_seed4_ep127_miou71.42.pth"
+    },
+    {
+      "model": "ds_rangenet",
+      "seed": 0,
+      "best_epoch": 138,
+      "val_miou_best": 73.16,
+      "log_file": "train_log_ds_rangenet_seed0.txt",
+      "ckpt_file": "ds_rangenet_seed0_ep138_miou73.16.pth"
+    },
+    {
+      "model": "ds_rangenet",
+      "seed": 1,
+      "best_epoch": 137,
+      "val_miou_best": 72.86,
+      "log_file": "train_log_ds_rangenet_seed1.txt",
+      "ckpt_file": "ds_rangenet_seed1_ep137_miou72.86.pth"
+    },
+    {
+      "model": "ds_rangenet",
+      "seed": 2,
+      "best_epoch": 127,
+      "val_miou_best": 73.15,
+      "log_file": "train_log_ds_rangenet_seed2.txt",
+      "ckpt_file": "ds_rangenet_seed2_ep127_miou73.15.pth"
+    },
+    {
+      "model": "ds_rangenet",
+      "seed": 3,
+      "best_epoch": 146,
+      "val_miou_best": 72.9,
+      "log_file": "train_log_ds_rangenet_seed3.txt",
+      "ckpt_file": "ds_rangenet_seed3_ep146_miou72.90.pth"
+    },
+    {
+      "model": "ds_rangenet",
+      "seed": 4,
+      "best_epoch": 129,
+      "val_miou_best": 73.18,
+      "log_file": "train_log_ds_rangenet_seed4.txt",
+      "ckpt_file": "ds_rangenet_seed4_ep129_miou73.18.pth"
+    }
+  ]
+}

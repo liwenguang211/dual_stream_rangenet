@@ -1,0 +1,68 @@
+cff-version: 1.2.0
+title: >-
+  DS-RangeNet: Lightweight Dual-Stream LiDAR Semantic
+  Segmentation for Industrial Indoor Environments
+message: >-
+  If you use this code or the UBPC-9 dataset, please cite
+  both the software and the dissertation below.
+type: software
+authors:
+  - given-names: Wenguang
+    family-names: Li
+    affiliation: Shandong University
+  - given-names: Jiying
+    family-names: Ren
+    affiliation: Shandong University
+  - given-names: Jinshun
+    family-names: Ou
+    affiliation: Shandong University
+  - given-names: Yongxin
+    family-names: Ma
+    affiliation: Shandong University
+  - given-names: Jun
+    family-names: Zhou
+    affiliation: Shandong University
+    email: zhoujun@sdu.edu.cn
+  - given-names: Panling
+    family-names: Huang
+    affiliation: Shandong University
+    email: hfpl@sdu.edu.cn
+repository-code: 'https://github.com/liwenguang211/dual_stream_rangenet'
+abstract: >-
+  DS-RangeNet is a lightweight dual-stream LiDAR range-image
+  semantic segmentation network for industrial indoor
+  environments. It uses a 16-channel input split into a
+  5-channel material/intensity-curvature stream and an
+  11-channel geometry stream, with shallow CBAM fusion,
+  per-stream ASPP, and pooled intensity-guided cross
+  attention (IGCA) with a pairwise intensity-curvature bias.
+  This repository provides the model, the UBPC-9 dataset
+  splits, the full reproducibility evidence chain, and the
+  scripts required to regenerate every table in the paper
+  from raw logs.
+keywords:
+  - LiDAR
+  - semantic segmentation
+  - range image
+  - dual-stream network
+  - cross attention
+  - reproducibility
+license: MIT
+version: 3.0.0
+date-released: '2026-07-21'
+preferred-citation:
+  type: thesis
+  title: >-
+    Lightweight Multi-Dimensional Semantic Extraction via
+    Geometry-Intensity-Curvature Deep Coupling
+  authors:
+    - given-names: Wenguang
+      family-names: Li
+      affiliation: Shandong University
+  year: 2026
+  thesis-type: PhD thesis
+  institution:
+    name: Shandong University
+  notes: >-
+    Chapter 3: DS-RangeNet. Code and data:
+    https://github.com/liwenguang211/dual_stream_rangenet

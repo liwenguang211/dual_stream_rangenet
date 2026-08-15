@@ -1,0 +1,16 @@
+method,abbr,tag,seed,best_epoch,val_miou_best,params_M,flops_G,log_file
+RangeFormer,RF,rf,100,139,67.52,38.2,82.6,train_log_rf_seed100.txt
+RangeFormer,RF,rf,101,141,66.83,38.2,82.6,train_log_rf_seed101.txt
+RangeFormer,RF,rf,102,130,67.4,38.2,82.6,train_log_rf_seed102.txt
+RangeFormer,RF,rf,103,126,66.71,38.2,82.6,train_log_rf_seed103.txt
+RangeFormer,RF,rf,104,134,67.03,38.2,82.6,train_log_rf_seed104.txt
+Conventional CA,CA,ca,200,134,71.5,5.69,30.1,train_log_ca_seed200.txt
+Conventional CA,CA,ca,201,133,71.09,5.69,30.1,train_log_ca_seed201.txt
+Conventional CA,CA,ca,202,134,71.49,5.69,30.1,train_log_ca_seed202.txt
+Conventional CA,CA,ca,203,142,71.11,5.69,30.1,train_log_ca_seed203.txt
+Conventional CA,CA,ca,204,127,71.42,5.69,30.1,train_log_ca_seed204.txt
+DS-RangeNet,DS,ds,300,135,73.16,5.69,28.4,train_log_ds_seed300.txt
+DS-RangeNet,DS,ds,301,137,72.86,5.69,28.4,train_log_ds_seed301.txt
+DS-RangeNet,DS,ds,302,127,73.15,5.69,28.4,train_log_ds_seed302.txt
+DS-RangeNet,DS,ds,303,146,72.9,5.69,28.4,train_log_ds_seed303.txt
+DS-RangeNet,DS,ds,304,129,73.18,5.69,28.4,train_log_ds_seed304.txt
