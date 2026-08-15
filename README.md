@@ -2,8 +2,20 @@ markdown
 # DS-RangeNet v3 — Reviewer Verification Package
 
 **Paper**: DS-RangeNet: Lightweight Dual-Stream LiDAR Semantic Segmentation for Industrial Indoor Environments (MDPI)  
-**Git Commit**: `a3f7c2e`  
-**Status**: 🎉 ALL CHECKS PASSED (EXIT 0)
+**Repository state**: Git metadata is not included in this package; commit identifiers in legacy registries are informational only.
+
+## Data and Checkpoints
+
+The original data and checkpoint package is shared through Baidu NetDisk:
+
+```text
+Share name : points_label
+Link       : https://pan.baidu.com/s/1vjrwEqdcjyA6KKEg4zs0fA
+Access code: 5577
+```
+
+The archive must be obtained and its contents verified locally before running
+training or evaluation. It is not bundled in this repository.
 
 ---
 
@@ -14,9 +26,9 @@ markdown
 
 ├── scripts/
 
-│   ├── train.py                      ← Training script (reproduces all checkpoints)
+│   ├── train.py                      ← Training entry point; full data and run provenance are required
 
-│   ├── export_onnx.py                ← Export trained PyTorch model to ONNX
+│   ├── export_onnx.py                ← ONNX export helper
 
 │   └── evaluate.py                   ← Evaluation script
 
@@ -52,7 +64,7 @@ markdown
 
 │   ├── ds_rangenet_attn_seed0_ep136_miou73.20.pth
 
-│   └── ds_rangenet_v3.onnx          ← Deployment model (opset 17, exported from trained weights)
+│   └── ds_rangenet_v3.onnx          ← Generated locally when ONNX export dependencies are available
 
 │
 
@@ -64,9 +76,9 @@ markdown
 
 │
 
-├── results/                          ← ALL REAL INFERENCE RESULTS (zero FILL_ME)
+├── results/                          ← Reference result tables and derived summaries
 
-│   ├── raw/                          ← Per-seed, per-class CSVs (real outputs only)
+│   ├── raw/                          ← Per-seed and per-class CSVs; availability varies by experiment
 
 │   │   ├── five_seed_results.csv     ← Seeds {0,1,2,3,4}, split=validation_S3
 
@@ -145,13 +157,13 @@ markdown
 |-----------|---------|-------------------|----------------------|
 | `reproducibility/templates/` | Empty schemas for scripts to fill | **Yes** (by design) | ❌ No — templates only |
 | `reproducibility/evidence/` | Script-populated evidence files | **No** | ✅ Yes |
-| `results/raw/` | **All real inference outputs** | **No** | ✅ **Primary verification source** |
+| `results/raw/` | Reference CSVs; some fields are unavailable | Varies | Use only with row-level provenance |
 | `results/summaries/` | Derived statistics from raw/ | **No** | ✅ Yes |
 | `checkpoints/` | Model weights + manifests | **No** | ✅ Yes |
 
-**For reviewers**: All `FILL_ME` cells are confined to `reproducibility/templates/`.  
-The `results/raw/` directory contains only real inference outputs.  
-`build_tables.py` reads exclusively from `results/raw/` — never from templates.
+**For reviewers**: `FILL_ME` and `NA` denote unavailable values. They are not
+measurements and must not be used to substantiate paper claims. `build_tables.py`
+may read reference CSVs, but it does not establish experimental provenance.
 
 ---
 
@@ -168,13 +180,13 @@ pip install torch numpy onnx onnxruntime
 
 | Check | Description | Result |
 |-------|-------------|--------|
-| 1/7 | Registry format: zero FILL_ME, 16-col schema | ✅ 41 rows |
+| 1/7 | Registry format | Legacy reference table; inspect unavailable fields before use |
 | 2/7 | Checkpoint metadata: mIoU/epoch/git/optimizer/scheduler/SHA | ✅ 31/31 |
 | 3/7 | 5-seed stats match paper (73.1 ± 0.21) | ✅ |
 | 4/7 | Paper line refs T/V/S/L/C/P/D consistent | ✅ |
 | 5/7 | Manifest integrity (git=a3f7c2e, params=5.69M) | ✅ |
 | 6/7 | Registry → checkpoint linkage (all files exist) | ✅ 30/30 |
-| 7/7 | results/raw/ contains zero FILL_ME | ✅ |
+| 7/7 | results/raw availability | May contain unavailable or placeholder fields |
 
 ---
 
@@ -302,40 +314,38 @@ pip install torch numpy onnx onnxruntime
 
 ## ⚠️ Notes for Reviewers
 
-1. **Parameters**: All checkpoints produce exactly 5.69M params (DS-RangeNet) or 38.2M (RangeFormer) when loaded with the full PyTorch model definition.
-2. **Weights**: **Fully trained weights** using the published training procedure (see `scripts/train.py`). Each checkpoint reproduces the reported mIoU within ±0.1 pp when evaluated on the designated split. Metadata (mIoU, epoch, git_commit, optimizer state, scheduler state) matches the paper exactly.
-3. **Metadata**: All metadata (mIoU, epoch, git_commit, optimizer state, scheduler state) is paper-exact.
-4. **SHA-256**: Every checkpoint has a unique, stable SHA-256 hash recorded in `manifest.json`.
-5. **ONNX**: `checkpoints/ds_rangenet_v3.onnx` is exported from the trained PyTorch checkpoint using `scripts/export_onnx.py` (opset 17, dynamic batch/height/width). It has been validated on ONNX Runtime 1.18+ and produces identical outputs to the PyTorch model. The SHA‑256 hash in `manifest.json` corresponds to this exported file. To regenerate, run:
-bash
+1. **Parameters**: `verify_v3.py` compares declared parameter metadata; this is not proof of training.
+2. **Weights**: The included checkpoint files are parameter-matched artifacts. This package does not provide sufficient independent provenance to label them as fully trained weights.
+3. **Metadata**: mIoU, epoch, optimizer, scheduler, and legacy commit fields require independent source logs for confirmation.
+4. **SHA-256**: A hash can confirm file identity only when the referenced file is present.
+5. **ONNX**: No deployed ONNX artifact is committed. Generate one locally with `gen_real_onnx.py` after installing PyTorch and ONNX, then record its generated hash.
 
-python scripts/export_onnx.py \
+# Legacy export command removed: no verified deployment ONNX is bundled.
 
---checkpoint checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth \
+# Obtain and validate a checkpoint from the shared archive before exporting.
 
---output checkpoints/ds_rangenet_v3.onnx
+# Use `python gen_real_onnx.py` in a fully provisioned local environment.
 
 纯文本
-6. **Templates vs. Results**: `FILL_ME` cells exist **only** in `reproducibility/templates/`. All files in `results/raw/` are real inference outputs. `build_tables.py` reads exclusively from `results/raw/`.
+6. **Templates vs. Results**: `FILL_ME` and `NA` mark unavailable fields. Reference CSVs are not, by themselves, evidence of executed inference.
 7. **Closed loop**: experiment → config YAML → checkpoint → raw results CSV → paper table.
 
 ---
 
 ## Reproducibility Statement
 
-All primary checkpoints are **fully trained** using the official training pipeline (`scripts/train.py`) with the seeds listed in the registry. Each checkpoint’s metadata (mIoU, epoch, optimizer state) is paper‑exact. To independently verify training reproducibility, run:
-bash
+The primary checkpoints are parameter-matched artifacts. This repository does not include the source data, complete execution logs, or Git history required to verify a training run or reproduce the reported metrics.
 
-python scripts/train.py --config configs/ds_rangenet.yaml --seed 0
+# No reproducible one-command training invocation is claimed by this package.
 
 纯文本
-The resulting checkpoint will match the provided one within numerical precision. Correction history is transparently recorded in `checkpoints/manifest.json`.
+No claim is made that a newly trained checkpoint will match the included artifacts. Correction history is retained in `checkpoints/manifest.json`.
 
 Three reproducible methods to confirm checkpoint authenticity:
 
 1. **Parameter count:** run `python verify_v3.py` to compare each primary `params_actual_M` value with `params_paper_M`.
 2. **Inference reproduction:** run the documented evaluation command and compare its mIoU with the corresponding registry row.
-3. **Optimizer-state inspection:** load a `.pth` with PyTorch and inspect the `optimizer_state_dict`; metadata presence alone is not evidence of training, but the presence of non‑zero gradient history confirms genuine training.
+3. **Optimizer-state inspection:** inspect a `.pth` with PyTorch. Optimizer metadata alone is not evidence of training provenance.
 
 ---
 
@@ -343,7 +353,7 @@ Three reproducible methods to confirm checkpoint authenticity:
 
 - Source code: MIT License
 - UBPC-9 dataset: research-only
-- Pre-trained checkpoints: subject to same terms as dataset
+- Checkpoint artifacts: subject to the same terms as the dataset
 
 ## 📚 Citation
 bibtex
