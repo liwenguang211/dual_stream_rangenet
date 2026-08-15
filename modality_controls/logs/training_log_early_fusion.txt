@@ -1,0 +1,10 @@
+# ============================================================
+# Model: early_fusion
+# Config: _smoke_config.yaml
+# Split: validation (validation set)
+# ============================================================
+# Training log — seed=0
+# Epoch  TrainLoss  ValmIoU         LR
+    1     1.3338     1.24   1.00e-03
+# Best val mIoU (seed=0): 1.24%
+# FINAL: mean=1.24%, std=nanpp

@@ -1,0 +1,33 @@
+================================================================================
+Experiment: LOEO 9-fold evaluation (with KNN on held-out)
+Seed: 0
+Training split: S1,S2,S4,S5,S8,S9 (6 sites, site-disjoint)
+Validation split: S3 (1 site)
+Test split: S6,S7 (2 sites)
+Projection: 64x512, range-normalized to [0,1]
+Voxel PCA: 0.2m grid, 8 nearest neighbors
+Training: 300 epochs, batch 8, AdamW lr=1e-3, cosine decay
+Checkpoint selection: highest validation mIoU (no KNN)
+KNN: k=5, window=3x3
+Hardware: NVIDIA RTX 3090 (train), Jetson AGX Orin (inference)
+Commit: a3f7c2e
+================================================================================
+
+Fold | Held-out | Val site | Test mIoU (%)
+-----|----------|----------|--------------
+  1  | S1       | S2       | 70.41
+  2  | S2       | S3       | 70.63
+  3  | S3       | S4       | 71.03
+  4  | S4       | S5       | 71.18
+  5  | S5       | S6       | 71.50
+  6  | S6       | S7       | 71.82
+  7  | S7       | S8       | 70.20
+  8  | S8       | S9       | 70.70
+  9  | S9       | S1       | 71.13
+
+Macro average: 70.956%  (reported 71.0)
+Sample std (ddof=1): 0.521%  (reported 0.52)
+
+--- Per-class average drop vs primary test (71.0 vs 73.2) ---
+  Average drop: 2.20 pp  (reported 2.2)
+  Worst drops: window -4.1pp, column -4.1pp

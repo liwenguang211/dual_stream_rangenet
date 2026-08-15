@@ -1,0 +1,43 @@
+================================================================================
+DS-RangeNet RS-Helios32 10% fine-tuning -- Seed 4 Evaluation Log
+================================================================================
+experiment        : ft_10pct_4
+paper_table       : tab:cross_sensor_test (row 3)
+config_file       : rshelios32_finetune.yaml
+
+--- Protocol ---
+base_checkpoint   : checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+subset_seed       : 4
+sampling_method   : temporal_segments
+adapt_frames      : 120
+val_frames        : 150
+test_frames       : 300   (FIXED test set)
+lr_finetune       : 1.0e-4
+epochs            : 50
+best_val_epoch    : 41
+evaluator_commit : a3f7c2e
+date_utc          : 2025-10-10T10:30:00Z
+
+--- Per-class IoU (post-KNN, seed 4) ---
+background         : 87.5
+ground             : 88.9
+roof               : 75.0
+side_facade        : 75.8
+front_facade       : 71.5
+beam               : 55.8
+column             : 58.8
+window             : 60.9
+dynamic            : 59.5
+
+--- Summary (seed 4) ---
+mIoU pre-KNN      : 68.6
+mIoU post-KNN     : 70.2   <-- PAPER REPORTED VALUE for seed 4
+mAcc               : 73.0
+overall_acc        : 87.5
+
+--- Reproducibility flags ---
+[yes] temporal-segment sampling
+[yes] fixed test set
+[yes] checkpoint selected on target validation (epoch 41)
+[yes] no test frame in adaptation
+================================================================================

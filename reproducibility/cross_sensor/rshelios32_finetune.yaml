@@ -1,0 +1,173 @@
+# ============================================================================
+# Cross-sensor config: RS-Helios32 fine-tuning (10% target data)
+# ============================================================================
+# This file documents the 10% fine-tuning protocol for RS-Helios32
+# reported in Table tab:cross_sensor_test (row 3: "RS-Helios32 (10% ft.)").
+# Five independent subset selections; each trains from the Mid-360 checkpoint,
+# selects best on target validation subset, evaluates on fixed target test set.
+# Paper reports mean+/-std across the five selections.
+# ============================================================================
+
+experiment:
+  name: rshelios32_finetune_10pct
+  paper_section: "sec:generalization"   # Line C
+  description: >
+    Fine-tune DS-RangeNet (pre-trained on UBPC-9 Mid-360) on 10% of
+    RS-Helios32 target data. Five independent temporal-segment subsets.
+    Each subset: train on 10% adaptation, select checkpoint on validation,
+    evaluate once on the SAME fixed test set. Reports mean+/-std.
+  evaluator: ubpc9_official_eval
+  evaluator_commit: "a3f7c2e"
+  seeds: [0, 1, 2, 3, 4]
+
+# ----------------------------------------------------------------------------
+# Sensor specification (same as zero-shot)
+# ----------------------------------------------------------------------------
+sensor:
+  name: robosense_rshelios32
+  beams: 32
+  horizontal_resolution: 1800
+  vertical_resolution: 32
+  fov_up_deg: 10.0
+  fov_down_deg: -30.0
+  noise_model: gaussian_radial
+  intensity_type: intensity
+
+# ----------------------------------------------------------------------------
+# Spherical projection (identical to zero-shot; no interpolation)
+# ----------------------------------------------------------------------------
+projection:
+  height: 32
+  width: 1800
+  method: spherical
+  keep: nearest_return
+  input_stage_hole_filling: false
+  invalid_fill_value: 0.0
+  validity_mask: true
+  collision_rule: nearest_return
+
+# ----------------------------------------------------------------------------
+# KNN post-processing (same protocol as primary evaluation)
+# ----------------------------------------------------------------------------
+knn_postproc:
+  enabled: true
+  k: 5
+  search_window: 5
+  sigma: 1.0
+  method: voxel_hash_amortized
+
+# ----------------------------------------------------------------------------
+# 16-channel dual-stream (recomputed from RS-Helios32 point clouds)
+# ----------------------------------------------------------------------------
+channels: dual_stream_16
+
+channel_details:
+  stream_1_material_intensity:
+    - normalized_range
+    - local_mean_intensity
+    - boundary_strength
+    - high_freq_saliency
+    - intensity_std
+  stream_2_geometry:
+    - surface_normal_x
+    - surface_normal_y
+    - surface_normal_z
+    - coordinate_x
+    - coordinate_y
+    - coordinate_z
+    - dim_linear
+    - dim_planar
+    - dim_spherical
+    - isotropic_entropy
+    - relative_elevation
+
+# ----------------------------------------------------------------------------
+# Label mapping (RS-Helios32 UBPC-9 schema)
+# ----------------------------------------------------------------------------
+label_map:
+  0:  0    # background
+  1:  1    # ground
+  2:  2    # roof
+  3:  3    # side_facade
+  4:  4    # front_facade
+  5:  5    # beam
+  6:  6    # column
+  7:  7    # window
+  8:  8    # dynamic
+
+# ----------------------------------------------------------------------------
+# Five subset configurations (temporal segments, not random frames)
+# ----------------------------------------------------------------------------
+finetune_protocol:
+  base_checkpoint: checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+  adaptation_fraction: 0.10        # 10% of target adaptation subset
+  sampling: temporal_segments       # avoid overlap with test set
+  freeze_strategy: none             # full network fine-tuning
+  lr_finetune: 1.0e-4              # 10x smaller than pre-training
+  weight_decay: 1.0e-4
+  epochs_per_run: 50
+  batch_size: 8
+  early_stopping_patience: 10
+  warmup_epochs: 3
+  loss: "0.6*Focal(gamma=2)+0.4*Dice"
+
+subsets:
+  - name: ft_10pct_0
+    seed: 0
+    adapt_frames: 120               # ~10% of ~1200 frames
+    val_frames: 150
+    test_frames: 300
+    checkpoint: checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+    eval_log: logs/rshelios32/ft_10pct_0_eval.txt
+    pred_dir: outputs/rshelios32/ft_10pct_0/predictions
+
+  - name: ft_10pct_1
+    seed: 1
+    adapt_frames: 120
+    val_frames: 150
+    test_frames: 300
+    checkpoint: checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+    eval_log: logs/rshelios32/ft_10pct_1_eval.txt
+    pred_dir: outputs/rshelios32/ft_10pct_1/predictions
+
+  - name: ft_10pct_2
+    seed: 2
+    adapt_frames: 120
+    val_frames: 150
+    test_frames: 300
+    checkpoint: checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+    eval_log: logs/rshelios32/ft_10pct_2_eval.txt
+    pred_dir: outputs/rshelios32/ft_10pct_2/predictions
+
+  - name: ft_10pct_3
+    seed: 3
+    adapt_frames: 120
+    val_frames: 150
+    test_frames: 300
+    checkpoint: checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+    eval_log: logs/rshelios32/ft_10pct_3_eval.txt
+    pred_dir: outputs/rshelios32/ft_10pct_3/predictions
+
+  - name: ft_10pct_4
+    seed: 4
+    adapt_frames: 120
+    val_frames: 150
+    test_frames: 300
+    checkpoint: checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+    eval_log: logs/rshelios32/ft_10pct_4_eval.txt
+    pred_dir: outputs/rshelios32/ft_10pct_4/predictions
+
+# ----------------------------------------------------------------------------
+# Aggregated results (paper Table tab:cross_sensor_test, row 3)
+# ----------------------------------------------------------------------------
+results:
+  valid_pixel_ratio: 0.631
+  hole_ratio: 0.369
+  per_seed_post_knn: [69.8, 69.5, 70.0, 69.6, 70.2]
+  mean_post_knn: 69.8
+  std_post_knn: 0.26
+  per_seed_pre_knn: [68.4, 68.1, 68.5, 68.3, 68.6]
+  mean_pre_knn: 68.4
+  std_pre_knn: 0.18
+  drop_from_clean_pp: -1.8        # relative to Mid-360 71.6% post-KNN
+  note: "5 independent subsets; mean+/-std; same test set for all seeds"

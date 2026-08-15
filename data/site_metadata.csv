@@ -1,0 +1,10 @@
+site_id,environment,environment_readable,sequences,frames,trajectory_m,primary_split
+S1,steel_factory_A,Steel-structure factory A,seq01;seq02;seq03,1900,285,train
+S2,steel_factory_B,Steel-structure factory B,seq04;seq05,1500,225,train
+S3,warehouse_A,Multi-level warehouse A,seq06;seq07,1300,195,validation
+S4,warehouse_B,Multi-level warehouse B,seq08;seq09,1200,180,train
+S5,warehouse_C,Multi-level warehouse C,seq10;seq11,1300,195,train
+S6,parking_lot_A,Underground parking lot A,seq12;seq13,1100,165,test
+S7,parking_lot_B,Underground parking lot B,seq14;seq15,1000,150,test
+S8,steel_factory_C,Steel-structure factory C,seq16;seq17,1400,210,train
+S9,warehouse_D,Multi-level warehouse D,seq18;seq19;seq20,1300,195,train

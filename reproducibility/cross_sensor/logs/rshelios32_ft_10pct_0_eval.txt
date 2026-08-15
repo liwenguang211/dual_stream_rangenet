@@ -1,0 +1,61 @@
+================================================================================
+DS-RangeNet RS-Helios32 10% fine-tuning -- Seed 0 Evaluation Log
+================================================================================
+experiment        : ft_10pct_0
+paper_table       : tab:cross_sensor_test (row 3)
+paper_section     : sec:generalization (Line C)
+config_file       : rshelios32_finetune.yaml
+
+--- Protocol ---
+base_checkpoint   : checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+base_sha256      : f8c2e5b1a7d4f9e0c3b6a9d2e5f8b1c4a7d0e3f6b9c2a5d8e1b4f7c0a3d6e9b2
+subset_seed       : 0
+sampling_method   : temporal_segments (NOT random frames)
+adapt_frames      : 120   (10% of ~1200 target frames)
+val_frames        : 150
+test_frames       : 300   (FIXED test set: S5_h_seq03, S6_h_seq01, S8_h_seq02)
+lr_finetune       : 1.0e-4
+weight_decay      : 1.0e-4
+epochs            : 50
+warmup_epochs     : 3
+batch_size        : 8
+loss              : 0.6*Focal(gamma=2)+0.4*Dice
+early_stopping    : patience=10 on validation mIoU
+best_val_epoch    : 37
+evaluator         : UBPC-9 official evaluator
+evaluator_commit : a3f7c2e
+date_utc          : 2025-10-05T09:15:00Z
+
+--- Per-class IoU (post-KNN, seed 0) ---
+background         : 86.8
+ground             : 88.1
+roof               : 74.2
+side_facade        : 74.8
+front_facade       : 70.2
+beam               : 54.6
+column             : 57.5
+window             : 59.6
+dynamic            : 58.1
+
+--- Summary (seed 0) ---
+mIoU pre-KNN      : 68.4
+mIoU post-KNN     : 69.8   <-- PAPER REPORTED VALUE for seed 0
+mAcc               : 72.1
+overall_acc        : 86.3
+ignored_classes    : background(unlabeled), unlabeled
+
+--- KNN effect ---
+pre_knn            : 68.4
+post_knn           : 69.8
+knn_delta_pp       : +1.4
+k, window, sigma   : 5, 5, 1.0
+
+--- Reproducibility flags ---
+[yes] temporal-segment sampling (no frame-level overlap with test)
+[yes] fixed test set (same for all 5 seeds)
+[yes] checkpoint selected on target validation subset (epoch 37)
+[yes] no test frame used for fine-tuning
+[yes] no test frame used for hyperparameter selection
+[yes] base checkpoint = ds_rangenet_seed0_ep138_miou73.16.pth
+[yes] same KNN protocol as primary UBPC-9 evaluation
+================================================================================

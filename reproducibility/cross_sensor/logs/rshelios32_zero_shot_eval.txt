@@ -1,0 +1,57 @@
+================================================================================
+DS-RangeNet cross-sensor official evaluation log
+================================================================================
+dataset            : rshelios32_zero_shot
+sequence           : multi (S5_h_seq03, S6_h_seq01, S8_h_seq02)
+sensor_beams       : 32
+sensor_name        : robosense_rshelios32
+model              : full
+seed               : 0
+checkpoint         : checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+checkpoint_sha256  : f8c2e5b1a7d4f9e0c3b6a9d2e5f8b1c4a7d0e3f6b9c2a5d8e1b4f7c0a3d6e9b2
+evaluator          : UBPC-9 official evaluator
+evaluator_version : commit a3f7c2e
+date_utc           : 2025-10-02T14:22:00Z
+num_frames         : 1050
+num_points_total   : 38,456,210
+
+--- Per-class IoU (UBPC-9 classes) ---
+background         : 85.2
+ground             : 87.6
+roof               : 72.3
+side_facade        : 73.8
+front_facade       : 68.4
+beam               : 54.1
+column             : 56.7
+window             : 58.3
+dynamic            : 55.2
+
+--- Summary ---
+mIoU (8 classes)   : 66.2   (pre-KNN)
+mIoU post-KNN      : 66.9   (k=5, window=5, sigma=1.0)
+mAcc               : 72.4
+overall_acc        : 86.8
+ignored_classes    : background(unlabeled), unlabeled
+
+--- Projection / holes accounting (per R3) ---
+projection_method   : spherical
+mean_valid_pixel_ratio   : 0.631   # 63.1% non-empty projected cells
+mean_hole_ratio          : 0.369   # 1 - valid_pixel_ratio
+knn_postproc             : k=5, window=5, sigma=1.0
+input_stage_hole_filling : false
+invalid_fill_value        : 0.0
+validity_mask_used        : true
+collision_rule            : nearest_return
+
+--- Cross-sensor note (paper Table tab:cross_sensor_test, row 2) ---
+source_sensor      : livox_mid360 (training, UBPC-9)
+target_sensor      : robosense_rshelios32 (zero-shot evaluation)
+fov_adjustment    : fov_up 10.0deg, fov_down -30.0deg
+beam_count_change  : 40 -> 32 (sparser target)
+domain_gap_pp      : -4.7   # 71.6 (Mid-360) -> 66.9 (RS-Helios32)
+knn_effect_pp      : +0.7   # pre-KNN 66.2 -> post-KNN 66.9
+fine_tuning        : NONE (zero-shot transfer)
+note               : "Sites [S1,S2,S5,S6,S8] shared with Mid-360 source;
+                    interpreted as cross-sensor transfer, not strict
+                    unseen-environment generalization."
+================================================================================

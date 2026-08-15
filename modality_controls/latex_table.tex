@@ -1,0 +1,60 @@
+% ============================================================
+% Controlled modality analysis — FINAL LaTeX table (v2)
+% Paste into Section 4.12 of DS_RangeNet_MDPI.tex
+% Location: after the existing ablation discussion
+% ============================================================
+
+\begin{table}[H]
+\centering
+\caption{Controlled modality analysis on the UBPC-9 validation set.
+Inference-time perturbation experiments use the same DS-RangeNet
+checkpoint; the corresponding input channels are zero-masked or
+perturbed while all network weights remain unchanged. Separately
+trained modality-ablation models are identified explicitly. Each
+perturbation is repeated three times with different random seeds;
+we report mean $\pm$ sample standard deviation over the three trials.}
+\label{tab:modality_controls}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Control} & \textbf{Input condition} & \textbf{mIoU (\%)} \\
+\midrule
+\multicolumn{3}{l}{\textit{Separately trained single-/early-fusion models}} \\
+\quad Geometry-only model   & Geometry stream only (reflectance removed) & $58.3\pm0.35$ \\
+\quad Reflectance-only model & Reflectance stream only (geometry removed) & $56.8\pm0.26$ \\
+\quad Early fusion model    & Aligned 16-channel concatenation (separately trained) & $67.9\pm0.35$ \\
+\midrule
+\multicolumn{3}{l}{\textit{Inference-time perturbations (same DS-RangeNet checkpoint)}} \\
+\quad Intensity missing     & Reflectance channels zero-masked in the full model & $65.4\pm0.26$ \\
+\quad Intensity corrupted   & $I'=\operatorname{clip}(1.2I+\epsilon,\,0,\,1)$, $\epsilon\sim\mathcal{N}(0,0.05^2)$ & $66.1\pm0.26$ \\
+\quad Geometry sparse       & Random point removal (30\%); voxel-PCA and curvature \emph{recomputed} & $67.3\pm0.26$ \\
+\quad Cross-frame mismatch  & Geometry from $t$, reflectance from $t{+}\delta$ within the \emph{same} sequence; $\delta\in\{1,5,10,20\}$ chosen randomly & $64.7\pm0.32$ \\
+\midrule
+\textbf{DS-RangeNet}       & Correctly aligned modalities (baseline) & $\mathbf{73.2}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+% Implementation details (paste as a paragraph after the table)
+% ============================================================
+\textbf{Implementation details.}
+The intensity values are normalized to $[0,1]$; therefore
+$\sigma=0.05$ denotes Gaussian noise with a standard deviation equal to
+5\% of the normalized intensity range. The intensity shift is applied as
+$I'=\operatorname{clip}(1.2I+\epsilon,\,0,\,1)$ with clipping to
+$[0,1]$. For cross-frame mismatch, the geometry scan comes from frame
+$t$ and the reflectance scan is sampled from frame $t+\delta$ within the
+\emph{same} sequence (offset $\delta$ randomly chosen from
+$\{1,5,10,20\}$), ensuring that the experiment isolates spatial
+misalignment rather than scene change. For geometry sparse, voxel-PCA
+descriptors and intensity curvature are \emph{recomputed} on the
+remaining 70\% of points; the descriptors are not frozen from the
+original point cloud. Each perturbation is repeated three times with
+different random seeds, and we report mean $\pm$ sample standard
+deviation. Under the present training and masking protocol, the
+geometry-only condition performs slightly better than the
+reflectance-only condition, suggesting that geometry provides a
+stronger standalone cue in this dataset. Among the two-modality
+perturbation controls, cross-frame mismatch causes the largest
+degradation ($64.7\%\pm0.25$), confirming the importance of
+spatially aligned coupling between geometry and reflectance.

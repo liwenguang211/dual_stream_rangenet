@@ -1,0 +1,44 @@
+# UBPC-9 class mapping: raw annotation labels -> 9 canonical UBPC-9 classes.
+# The 9 classes and their order match the model output channels and every
+# per-class IoU column in the paper (see src/models/ds_rangenet.py CLASSES and
+# reproducibility/seeds/results/per_seed_miou.csv column order).
+
+num_classes: 9
+ignore_label: 255          # unlabeled / out-of-projection points excluded from loss and IoU
+
+# canonical class list (index -> name); order is authoritative and MUST match
+# the model output channels: python/ds_rangenet_v3.py CLASSES and the per-class
+# columns of reproducibility/seeds/results/per_seed_miou.csv (dynamic is last).
+classes:
+  0: background
+  1: ground
+  2: roof
+  3: side_facade
+  4: front_facade
+  5: beam
+  6: column
+  7: window
+  8: dynamic
+
+# raw annotation label id -> canonical class id.
+# Raw ids follow the UBPC-9 labeling tool export. Any raw id not listed here is
+# mapped to ignore_label (255) and does not contribute to metrics.
+label_map:
+  0: 255          # unlabeled
+  1: 0            # misc structure        -> background
+  2: 1            # floor / driveable      -> ground
+  3: 2            # roof deck              -> roof
+  4: 3            # side wall              -> side_facade
+  5: 4            # front / gable wall     -> front_facade
+  6: 8            # person                 -> dynamic
+  7: 8            # forklift / AGV / cart  -> dynamic
+  8: 5            # steel beam / truss     -> beam
+  9: 6            # column / pillar        -> column
+  10: 7           # window / opening       -> window
+
+# Human-readable notes on the semantic grouping used for UBPC-9.
+notes: >
+  dynamic aggregates all moving agents (people and vehicles) because UBPC-9 is an
+  industrial-building perception benchmark where the structural classes are the
+  focus. beam/column/window are the fine-grained structural classes with the
+  lowest IoU and the largest LOEO drop, so they are kept separate.

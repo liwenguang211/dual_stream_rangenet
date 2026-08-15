@@ -1,0 +1,72 @@
+# Jetson deployment environment manifest (paper-aligned)
+# Reviewer 2: TensorRT / CUDA / power-mode / clocks / ambient temp.
+# All telemetry statistics: mean over 3600 samples @ 1 Hz, 60-min endurance run.
+
+device:
+  board: Jetson AGX Orin 32GB
+  jetpack: 5.1.2
+  l4t: 35.4.1
+
+software:
+  cuda: 11.4
+  cudnn: 8.6.0
+  tensorrt: 8.5.2
+  onnxruntime: 1.16.3
+  precision: fp16
+
+power_and_clocks:
+  nvpmodel_mode: 0   # MAXN
+  jetson_clocks: on
+  cpu_clock_mhz: 2200
+  gpu_clock_mhz: 1300
+  emc_clock_mhz: 3200
+  power_budget_w: 25
+
+thermal:
+  ambient_temp_c: 24.5
+  cooling: active fan
+  thermal_throttle_observed: no
+
+inference_engine:
+  type: tensorrt
+  engine_path: models/ds_rangenet_v3.engine
+  input_hw: [64, 512]
+  precision: fp16
+  workspace_mb: 1024
+
+run:
+  model: dsconv
+  onnx_path: models/ds_rangenet_v3.onnx
+  engine_path: models/ds_rangenet_v3.engine
+  input_hw: [64, 512]
+  duration_min: 60
+  sampling_hz: 1
+  total_samples: 3600
+  telemetry_csv: jetson_telemetry.csv
+
+# Key results (paper-reported, mean over 3600 samples)
+results:
+  latency_ms:
+    mean: 37.4
+    std: 0.4
+    unit: ms
+  power_w:
+    mean: 21.3
+    std: 0.6
+    unit: W
+  gpu_mem_mb:
+    mean: 612
+    std: 8
+    unit: MB
+  ram_mb:
+    mean: 1852
+    std: 18
+    unit: MB
+  throttle_events: 0
+
+# Methodology notes
+methodology:
+  latency: "End-to-end inference time per frame, measured by CUDA events (cudaEventRecord start/stop), averaged over 3600 iterations."
+  power: "Total system power (VDD_IN rail) sampled via tegrastats @ 1 Hz."
+  memory: "GPU memory = TensorRT engine activation + weights footprint; RAM = tegrastats RAM used field."
+  statistics: "Mean +/- std over all 3600 samples; no outlier removal."

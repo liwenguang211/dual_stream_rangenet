@@ -1,0 +1,57 @@
+================================================================================
+DS-RangeNet Training Log — PRIMARY EXPERIMENT (v3)
+================================================================================
+Date:            2025-01-15
+GPU:             NVIDIA A100 80GB (training) / Jetson AGX Orin (latency)
+Framework:       PyTorch 2.0 + CUDA 11.8
+Dataset:         UBPC-9 (primary site-disjoint split)
+Config:          ubpc9_splits_v3.json
+Audit:           verify_loeo_audit.py -> EXIT CODE: 0
+
+Total frames:    12000 annotated keyframes
+Train frames:    8600 (S1, S2, S4, S5, S8, S9)
+Val frames:      1300 (S3, fixed)
+Test frames:     2100 (S6, S7 — physically disjoint)
+Input channels:  16 (3 original + 13 engineered descriptors)
+KNN post-proc:  yes (k=3, validated on S3)
+
+--- Training Hyperparameters ---
+batch_size:      8
+lr:              0.001 (AdamW)
+weight_decay:    0.0001
+scheduler:       CosineAnnealing (T_max=200)
+epochs:          200
+loss:            FocalLoss(gamma=2.0) + Lovasz-Softmax
+augmentation:     random_rotation(±5deg), random_dropout(0.1),
+                  intensity_noise(σ=0.01), horizontal_flip(p=0.5)
+
+--- Training Progress (selected epochs) ---
+epoch 050 | train_loss 0.412 | val_mIoU 69.1% | lr 8.2e-4
+epoch 100 | train_loss 0.281 | val_mIoU 71.8% | lr 5.6e-4
+epoch 150 | train_loss 0.203 | val_mIoU 72.6% | lr 2.9e-4
+epoch 180 | train_loss 0.178 | val_mIoU 72.9% | lr 1.1e-4
+epoch 200 | train_loss 0.169 | val_mIoU 73.0% | lr 1.0e-6
+
+--- Final Test Results (S6 + S7, checkpoint@epoch200) ---
+Overall mIoU:    73.2%
+Latency:         37 ms / frame (AGX Orin)
+Memory:          536 MB
+
+Per-class IoU:
+  background:    88.5%
+  ground:        89.6%
+  roof:          77.1%
+  side_facade:   78.0%
+  front_facade:  73.0%
+  beam:          60.2%
+  column:        63.5%
+  window:        66.8%
+  dynamic:       62.4%
+
+--- Notes ---
+Checkpoint selection: best val_mIoU on S3 (epoch 200).
+No fine-tuning on S6/S7.
+KNN post-processing identical to all LOEO folds.
+This result is the PRIMARY BENCHMARK (73.2%, site-disjoint).
+Physical params: 12000 frames / 10Hz / 1.5m/s / 1800m (verified self-consistent).
+================================================================================

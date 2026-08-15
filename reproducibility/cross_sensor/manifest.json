@@ -1,0 +1,19 @@
+{
+  "package": "Part4_Cross_Sensor_Data",
+  "description": "Cross-sensor generalization data (SemanticKITTI, SemanticPOSS, RS-Helios32)",
+  "paper_section": "Section 4.12 (Line C), Table 13",
+  "contents": [
+    "configs/semantickitti.yaml + 5 eval logs",
+    "configs/semanticposs.yaml + 5 eval logs",
+    "configs/rshelios32_zero_shot.yaml + eval log",
+    "configs/rshelios32_finetune.yaml + 5 eval logs + all.txt summary",
+    "verify_manifest.py (cross-sensor verification)",
+    "README.md (full documentation)"
+  ],
+  "sensors": [
+    "Livox Mid-360 (source)",
+    "RoboSense RS-Helios32 (target)",
+    "Hesai PandarXT (SemanticKITTI)",
+    "Hesai Pandar64 (SemanticPOSS)"
+  ]
+}

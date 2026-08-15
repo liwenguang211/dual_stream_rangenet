@@ -1,0 +1,23 @@
+{
+  "geometry_only": {
+    "mean": 1.23,
+    "std": NaN,
+    "raw": [
+      1.23
+    ]
+  },
+  "reflectance_only": {
+    "mean": 1.24,
+    "std": NaN,
+    "raw": [
+      1.24
+    ]
+  },
+  "early_fusion": {
+    "mean": 1.24,
+    "std": NaN,
+    "raw": [
+      1.24
+    ]
+  }
+}

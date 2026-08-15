@@ -1,0 +1,18 @@
+# LOEO Fold 2 — test site held out = S2 (steel_factory_B)
+# Protocol: 7 train + 1 val + 1 test, pairwise site-disjoint. KNN k=3.
+# Source of truth: loeo_supporting_materials/ubpc9_splits_v3.json (folds.fold_2)
+fold_id: 2
+test_site: S2
+val_site: S3
+train_sites: [S1, S4, S5, S6, S7, S8, S9]
+train_frames: 10100
+val_frames: 1300
+test_frames: 1500
+reported_miou: 70.6
+knn: {enabled: true, k: 3}
+sequences:
+  test:  [S2/seq04, S2/seq05]
+  val:   [S3/seq06, S3/seq07]
+  train: [S1/seq01, S1/seq02, S1/seq03, S4/seq08, S4/seq09, S5/seq10, S5/seq11,
+          S6/seq12, S6/seq13, S7/seq14, S7/seq15, S8/seq16, S8/seq17,
+          S9/seq18, S9/seq19, S9/seq20]

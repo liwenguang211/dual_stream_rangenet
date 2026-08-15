@@ -1,0 +1,10 @@
+# ============================================================
+# Model: geometry_only
+# Config: _smoke_config.yaml
+# Split: validation (validation set)
+# ============================================================
+# Training log — seed=0
+# Epoch  TrainLoss  ValmIoU         LR
+    1     1.3378     1.23   1.00e-03
+# Best val mIoU (seed=0): 1.23%
+# FINAL: mean=1.23%, std=nanpp

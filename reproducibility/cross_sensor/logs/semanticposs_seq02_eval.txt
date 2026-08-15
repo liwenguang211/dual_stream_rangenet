@@ -1,0 +1,52 @@
+================================================================================
+DS-RangeNet cross-sensor official evaluation log
+================================================================================
+dataset            : semanticposs
+sequence           : 02
+sensor_beams       : 40
+sensor_name        : hesai_pandora
+model              : full
+seed               : 0
+checkpoint         : checkpoints/full_semanticposs_seed0.pth
+checkpoint_sha256  : a9d3c6e0f2b5a8d1e4c7f0a3b6d9e2c5f8b1a4d7e0c3f6a9d2e5f8a1c4e7b0e3f6a9d2c5b8e1f4a7b0d3a6c9f2e5
+evaluator          : SemanticPOSS official evaluator
+evaluator_version : commit a3f7c2e
+date_utc           : 2025-09-16T10:15:00Z
+num_frames         : 1198
+num_points_total   : 42,567,891
+
+--- Per-class IoU (mapped to UBPC-9 classes) ---
+background         : 78.6
+ground             : 85.3
+roof               : 62.1
+side_facade        : 48.7
+front_facade       : 42.5
+beam               : 38.4
+column             : 44.2
+window             : 40.8
+dynamic            : 52.3
+
+--- Summary ---
+mIoU (8 classes)   : 53.5   (pre-KNN)
+mIoU post-KNN      : 54.1   (k=5, window=5, sigma=1.0)
+mAcc               : 60.8
+overall_acc        : 84.2
+ignored_classes    : unlabeled
+
+--- Projection / holes accounting (per R3) ---
+projection_method   : spherical
+mean_valid_pixel_ratio   : 0.793   # 79.3% non-empty projected cells
+mean_hole_ratio          : 0.207   # 1 - valid_pixel_ratio
+knn_postproc             : k=5, window=5, sigma=1.0
+input_stage_hole_filling : false
+invalid_fill_value        : 0.0
+validity_mask_used        : true
+collision_rule            : nearest_return
+
+--- Cross-sensor note ---
+source_sensor      : livox_mid360 (training, UBPC-9)
+target_sensor      : hesai_pandora (evaluation, SemanticPOSS)
+fov_adjustment    : fov_up 7.0deg, fov_down -16.0deg
+beam_count_change  : 40 -> 40 (same beam count, different scan pattern)
+domain_gap_pp     : -19.1   # 73.2 (UBPC-9) -> 54.1 (POSS seq02)
+================================================================================

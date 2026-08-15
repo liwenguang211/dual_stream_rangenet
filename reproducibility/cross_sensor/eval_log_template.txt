@@ -1,0 +1,40 @@
+================================================================
+DS-RangeNet cross-sensor official evaluation log (TEMPLATE)
+================================================================
+Fill this template by pasting the output of the dataset's official
+semantic-segmentation evaluator (SemanticKITTI api evaluate_semantics.py /
+SemanticPOSS evaluator). Do not hand-edit the numbers.
+
+dataset            : FILL_ME            # semantickitti | semanticposs
+sequence           : FILL_ME            # e.g. 08 / 02
+sensor_beams       : FILL_ME            # 64 / 40
+model              : full
+seed               : 1337
+checkpoint_sha256  : FILL_ME
+evaluator_version  : FILL_ME            # git commit / release of the eval api
+date_utc           : FILL_ME
+num_frames         : FILL_ME
+num_points_total   : FILL_ME
+
+--- Per-class IoU (mapped to UBPC-9 classes) ---
+ground             : FILL_ME
+roof               : FILL_ME
+side_facade        : FILL_ME
+front_facade       : FILL_ME
+beam               : FILL_ME
+column             : FILL_ME
+window             : FILL_ME
+dynamic            : FILL_ME
+
+--- Summary ---
+mIoU (8 classes)   : FILL_ME
+mAcc               : FILL_ME
+overall_acc        : FILL_ME
+ignored_classes    : background, unlabeled
+
+--- Projection / holes accounting (per R3) ---
+mean_valid_pixel_ratio   : FILL_ME   # fraction of non-empty projected cells
+mean_hole_ratio          : FILL_ME   # 1 - valid_pixel_ratio (sparser for 40-beam)
+knn_postproc             : k=5, window=5, sigma=1.0
+input_stage_hole_filling : false
+================================================================

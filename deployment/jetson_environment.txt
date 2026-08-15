@@ -1,0 +1,64 @@
+DS-RangeNet v3 -- Jetson deployment environment
+================================================================
+Source of truth: reproducibility/deployment/environment_manifest.yaml
+Telemetry:       reproducibility/deployment/jetson_telemetry.csv (3600 samples @ 1 Hz)
+
+--- Device ---
+board            : Jetson AGX Orin 32GB
+jetpack          : 5.1.2
+l4t              : 35.4.1
+
+--- Software ---
+cuda             : 11.4
+cudnn            : 8.6.0
+tensorrt         : 8.5.2
+onnxruntime      : 1.16.3
+precision        : fp16
+
+--- Power and clocks ---
+nvpmodel_mode    : 0 (MAXN)
+jetson_clocks    : on
+cpu_clock_mhz    : 2200
+gpu_clock_mhz    : 1300
+emc_clock_mhz    : 3200
+power_budget_w   : 25
+
+--- Thermal ---
+ambient_temp_c         : 24.5
+cooling                : active fan
+thermal_throttle       : no (0 throttle events across 3600 samples)
+
+--- Inference engine ---
+engine_type      : tensorrt
+engine_path      : models/ds_rangenet_v3.engine
+engine_sha256    : (see checkpoints/manifest.json)
+input_hw         : 64 x 512
+precision        : fp16
+workspace_mb    : 1024
+
+--- Run ---
+model            : dsconv (DS-RangeNet v3, 5.69M params)
+duration_min     : 60
+sampling_hz      : 1
+total_samples    : 3600
+
+--- Key results (paper-reported, mean over 3600 samples) ---
+latency_mean_ms  : 37.4
+latency_std_ms   : 0.4
+power_mean_w     : 21.3
+power_std_w      : 0.6
+gpu_mem_mean_mb  : 612
+gpu_mem_std_mb   : 8
+ram_mean_mb      : 1852
+ram_std_mb       : 18
+throttle_events  : 0
+
+--- Methodology ---
+Latency  : end-to-end inference time per frame, measured by CUDA events
+            (cudaEventRecord start/stop), averaged over 3600 iterations.
+Power    : total system power (VDD_IN rail) sampled via tegrastats @ 1 Hz.
+Memory   : GPU memory (gpu_mem_mb) = TensorRT engine activation + weights
+            footprint; RAM (ram_mb) = tegrastats RAM used field.
+Statistics: mean ± std over all 3600 samples; no outlier removal.
+
+================================================================

@@ -1,0 +1,160 @@
+# ============================================================================
+# Cross-sensor config: SemanticKITTI (Velodyne HDL-64E, 64-beam)
+# ============================================================================
+# This file documents the exact projection, preprocessing, and class mapping
+# used for the SemanticKITTI cross-sensor experiment in DS-RangeNet.
+# Reproducibility: all parameters are frozen; only the random seed varies
+# across the five runs recorded in checkpoint_manifest.csv.
+# ============================================================================
+
+experiment:
+  name: semantickitti_cross_sensor
+  paper_section: "sec:public_benchmark"   # Line P
+  description: >
+    Evaluate DS-RangeNet (trained on UBPC-9 with Livox Mid-360) on
+    SemanticKITTI sequence 08 using the official train/val/test split.
+    This is a cross-sensor generalization test: the training sensor
+    (Livox Mid-360, non-repetitive scan) differs from the evaluation
+    sensor (Velodyne HDL-64E, mechanical spinning 64-beam).
+  evaluator: official_semantickitti_toolbox
+  evaluator_commit: "a3f7c2e"
+
+# ----------------------------------------------------------------------------
+# Sensor specification
+# ----------------------------------------------------------------------------
+sensor:
+  name: velodyne_hdl64e
+  beams: 64
+  horizontal_resolution: 2048       # full 360deg sweep
+  vertical_resolution: 64
+  fov_up_deg: 3.0                  # upper FOV limit
+  fov_down_deg: -25.0               # lower FOV limit (total 28deg VFOV)
+  noise_model: gaussian_radial       # KITTI's known noise characteristic
+  intensity_type: remission          # calibrated remission values [0,1]
+
+# ----------------------------------------------------------------------------
+# Spherical projection (must match C++ preprocessor exactly)
+# ----------------------------------------------------------------------------
+projection:
+  height: 64
+  width: 2048
+  method: spherical
+  keep: nearest_return               # z-buffer: keep closest point per pixel
+  # IMPORTANT (per Reviewer 3): no input-stage interpolation or hole filling.
+  # Empty cells are zero-filled and tracked by a separate validity mask.
+  # The mask excludes invalid pixels from loss and evaluation but is NOT
+  # concatenated as an extra network input channel.
+  input_stage_hole_filling: false
+  invalid_fill_value: 0.0
+  validity_mask: true
+  collision_rule: nearest_return      # multiple points -> keep closest
+
+# ----------------------------------------------------------------------------
+# Post-prediction KNN label refinement (applied to 3D points, not pixels)
+# ----------------------------------------------------------------------------
+knn_postproc:
+  enabled: true
+  k: 5
+  search_window: 5
+  sigma: 1.0
+  method: voxel_hash_amortized       # O(N) amortised, not O(N*M) brute force
+  note: "Same KNN protocol as UBPC-9 primary evaluation (Table tab:comparison)"
+
+# ----------------------------------------------------------------------------
+# 16-channel dual-stream construction
+# Reuses the DS-RangeNet preprocessor; intensity = KITTI 'remission' field.
+# ----------------------------------------------------------------------------
+channels: dual_stream_16
+
+channel_details:
+  stream_1_material_intensity:       # 5 channels
+    - normalized_range               # d / d_max
+    - local_mean_intensity           # I_bar (remission-normalized)
+    - boundary_strength              # ||nabla I_hat||_2
+    - high_freq_saliency             # |nabla^2 I_hat|
+    - intensity_std                  # sigma_I (texture richness)
+  stream_2_geometry:                # 11 channels
+    - surface_normal_x               # n_x
+    - surface_normal_y               # n_y
+    - surface_normal_z               # n_z
+    - coordinate_x                   # x
+    - coordinate_y                   # y
+    - coordinate_z                   # z
+    - dim_linear                    # L_lambda
+    - dim_planar                    # P_lambda
+    - dim_spherical                 # S_lambda
+    - isotropic_entropy             # H_lambda
+    - relative_elevation             # z_rel
+
+# ----------------------------------------------------------------------------
+# Label mapping: SemanticKITTI -> UBPC-9 evaluation classes
+# Ignored classes are mapped to -1 and excluded from mIoU computation.
+# ----------------------------------------------------------------------------
+label_map:
+  # --- ignore ---
+  0:  -1   # unlabeled         -> ignore
+  # --- ground ---
+  40:  1   # road              -> ground
+  48:  1   # sidewalk          -> ground
+  44:  1   # parking           -> ground
+  72:  1   # terrain           -> ground
+  # --- side_facade ---
+  50:  3   # building          -> side_facade
+  51:  3   # fence             -> side_facade
+  # --- background ---
+  70:  0   # vegetation        -> background
+  71:  0   # trunk             -> background
+  # --- column ---
+  80:  6   # pole              -> column
+  # --- window (planar vertical surface proxy) ---
+  81:  7   # traffic-sign      -> window
+  # --- dynamic ---
+  10:  8   # car               -> dynamic
+  11:  8   # bicycle           -> dynamic
+  15:  8   # motorcycle        -> dynamic
+  18:  8   # truck             -> dynamic
+  30:  8   # person            -> dynamic
+  252: 8   # moving-car        -> dynamic
+
+# ----------------------------------------------------------------------------
+# Data splits (official SemanticKITTI)
+# ----------------------------------------------------------------------------
+splits:
+  train: [0, 1, 2, 3, 4, 5, 6, 7, 9, 10]
+  val:   [8]
+  test:  [8]                        # cross-sensor generalization reported on seq08
+
+# ----------------------------------------------------------------------------
+# Training / evaluation protocol
+# ----------------------------------------------------------------------------
+training:
+  optimizer: AdamW
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler: CosineAnnealingLR
+  epochs: 150
+  warmup_epochs: 10
+  batch_size: 8
+  input_resolution: [64, 2048]
+  loss: "0.6*Focal(gamma=2)+0.4*Dice"
+  note: "Five independent seeds {0,1,2,3,4}; results averaged"
+
+# ----------------------------------------------------------------------------
+# Checkpoint and log paths (resolved relative to repo root)
+# ----------------------------------------------------------------------------
+checkpoint: checkpoints/full_semantickitti_seed0.pth
+official_eval_log: logs/semantickitti_seq08_eval.txt
+prediction_dir: outputs/semantickitti/seed0/predictions
+
+# ----------------------------------------------------------------------------
+# Reported results (paper Table tab:public_benchmark)
+# ----------------------------------------------------------------------------
+results:
+  miou_pre_knn:  61.2   # mean over 5 seeds, pre-KNN
+  miou_post_knn: 61.9   # mean over 5 seeds, post-KNN (reported value)
+  params_M: 5.69
+  flops_G: 82.6
+  latency_ms: 46          # RTX 3090, batch 1
+  valid_pixel_ratio: 0.824
+  hole_ratio: 0.176       # 1 - valid_pixel_ratio
+  note: "Cross-sensor: Mid-360 (training) -> Velodyne HDL-64E (testing)"

@@ -1,0 +1,145 @@
+# ============================================================================
+# Cross-sensor config: RS-Helios32 (RoboSense, 32-beam mechanical spinning)
+# ============================================================================
+# This is the "zero-shot" cross-sensor experiment reported in Table
+# tab:cross_sensor_test of the paper (Line C). The same Livox Mid-360-trained
+# checkpoint is evaluated directly on RS-Helios32 data WITHOUT fine-tuning.
+# ============================================================================
+
+experiment:
+  name: rshelios32_zero_shot
+  paper_section: "sec:generalization"   # Line C
+  description: >
+    Zero-shot cross-sensor transfer: DS-RangeNet trained on Livox Mid-360
+    (UBPC-9) is evaluated directly on RoboSense RS-Helios32 data.
+    No fine-tuning, no domain adaptation. Only FOV and projection geometry
+    are adjusted; all 16-channel descriptors are recomputed from the
+    RS-Helios32 point clouds using the same C++ preprocessor.
+  evaluator: ubpc9_official_eval
+  evaluator_commit: "a3f7c2e"
+
+# ----------------------------------------------------------------------------
+# Sensor specification
+# ----------------------------------------------------------------------------
+sensor:
+  name: robosense_rshelios32
+  beams: 32
+  horizontal_resolution: 1800       # 10Hz spinning Lidar, ~1800pts/ring
+  vertical_resolution: 32
+  fov_up_deg: 10.0                  # Helios32 wider upward FOV
+  fov_down_deg: -30.0                # total 40deg VFOV
+  noise_model: gaussian_radial
+  intensity_type: intensity           # raw intensity [0,255] -> normalized [0,1]
+
+# ----------------------------------------------------------------------------
+# Spherical projection
+# ----------------------------------------------------------------------------
+projection:
+  height: 32
+  width: 1800
+  method: spherical
+  keep: nearest_return
+  # Same no-interpolation policy as primary UBPC-9 pipeline.
+  # 32-beam sensor is sparser than training 40-beam Mid-360;
+  # valid_pixel_ratio = 63.1% (see paper Table tab:cross_sensor_test).
+  input_stage_hole_filling: false
+  invalid_fill_value: 0.0
+  validity_mask: true
+  collision_rule: nearest_return
+
+# ----------------------------------------------------------------------------
+# Post-prediction KNN (same protocol as primary evaluation)
+# ----------------------------------------------------------------------------
+knn_postproc:
+  enabled: true
+  k: 5
+  search_window: 5
+  sigma: 1.0
+  method: voxel_hash_amortized
+  note: "Identical KNN to primary UBPC-9 eval; not a sensor-specific tweak"
+
+# ----------------------------------------------------------------------------
+# 16-channel dual-stream (recomputed from RS-Helios32 point clouds)
+# ----------------------------------------------------------------------------
+channels: dual_stream_16
+
+channel_details:
+  stream_1_material_intensity:       # 5 channels
+    - normalized_range
+    - local_mean_intensity
+    - boundary_strength
+    - high_freq_saliency
+    - intensity_std
+  stream_2_geometry:                # 11 channels
+    - surface_normal_x
+    - surface_normal_y
+    - surface_normal_z
+    - coordinate_x
+    - coordinate_y
+    - coordinate_z
+    - dim_linear
+    - dim_planar
+    - dim_spherical
+    - isotropic_entropy
+    - relative_elevation
+
+# ----------------------------------------------------------------------------
+# Label mapping: RS-Helios32 UBPC-9 labels -> evaluation classes
+# (RS-Helios32 was labeled with the same 9-class UBPC-9 schema)
+# ----------------------------------------------------------------------------
+label_map:
+  0:  0    # background
+  1:  1    # ground
+  2:  2    # roof
+  3:  3    # side_facade
+  4:  4    # front_facade
+  5:  5    # beam
+  6:  6    # column
+  7:  7    # window
+  8:  8    # dynamic
+
+# ----------------------------------------------------------------------------
+# Data splits (cross-sensor zero-shot)
+# ----------------------------------------------------------------------------
+splits:
+  # Source domain (training): Livox Mid-360 UBPC-9 sequences
+  source_train: [S1, S2, S4, S5, S8, S9]
+  source_val:   [S3]
+  source_test:  [S6, S7]
+  # Target domain (zero-shot): RS-Helios32 sequences
+  target_adapt: [S1_h, S2_h, S5_h, S6_h, S8_h]  # 10% subsets sampled
+  target_val:   [S5_h_seq02]
+  target_test:  [S5_h_seq03, S6_h_seq01, S8_h_seq02]
+
+# ----------------------------------------------------------------------------
+# Training protocol (source domain only; no target fine-tuning here)
+# ----------------------------------------------------------------------------
+training:
+  optimizer: AdamW
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler: CosineAnnealingLR
+  epochs: 150
+  warmup_epochs: 10
+  batch_size: 8
+  input_resolution: [64, 512]   # Mid-360 training resolution
+  loss: "0.6*Focal(gamma=2)+0.4*Dice"
+  note: "Checkpoint ds_rangenet_seed0_ep138_miou73.16.pth used for all zero-shot eval"
+
+# ----------------------------------------------------------------------------
+# Checkpoint and log paths
+# ----------------------------------------------------------------------------
+checkpoint: checkpoints/ds_rangenet_seed0_ep138_miou73.16.pth
+official_eval_log: logs/rshelios32/zero_shot_eval.txt
+prediction_dir: outputs/rshelios32/zero_shot/predictions
+
+# ----------------------------------------------------------------------------
+# Reported results (paper Table tab:cross_sensor_test, row 2)
+# ----------------------------------------------------------------------------
+results:
+  valid_pixel_ratio: 0.631        # 63.1% non-empty projected cells
+  hole_ratio: 0.369               # 1 - valid_pixel_ratio
+  miou_pre_knn:  66.2            # pre-KNN mIoU (zero-shot)
+  miou_post_knn: 66.9            # post-KNN mIoU (zero-shot)
+  drop_from_mid360_pp: -4.7       # 71.6 -> 66.9 (post-KNN drop)
+  note: "Zero-shot: same checkpoint, only FOV changed, no fine-tuning"
